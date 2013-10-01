@@ -1,5 +1,6 @@
 package com.deepmine.by;
 
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
@@ -25,10 +26,10 @@ import java.util.TimerTask;
 public class MainActivity extends Activity {
 
     public static String TAG = "DEEPMINE";
-    public static MediaPlayer mediaPlayer;
     public static ImageView playBtn;
     public static TextView trackTitle1;
     public static TextView trackTitle2;
+    public Intent radioService;
 
     private AQuery aq;
 
@@ -37,10 +38,14 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         aq =new AQuery(this);
+
         playBtn =(ImageView) findViewById(R.id.playBtn);
         trackTitle1 =  (TextView) findViewById(R.id.tackTitle1);
         trackTitle2 =  (TextView) findViewById(R.id.tackTitle2);
+
+        radioService = new Intent(this, RadioService.class);
         updateTitle();
+
     }
 
     protected void updateTitle()
@@ -89,51 +94,22 @@ public class MainActivity extends Activity {
 
     public void playMedia()
     {
-        AsyncTask task = new playTask();
-        task.execute();
+        startService(radioService);
         playBtn.setImageResource(R.drawable.ic_media_pause);
     }
 
     public void stopMedia()
     {
-        mediaPlayer.stop();
+        stopService(radioService);
         playBtn.setImageResource(R.drawable.ic_media_play);
     }
 
     public void onPlay(View view)
     {
-        if( mediaPlayer != null && mediaPlayer.isPlaying())
-            stopMedia();
-        else
+        //if(!RadioService.mediaPlayer.isPlaying())
+        //    stopMedia();
+        //else
             playMedia();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
-    }
-
-    class playTask extends AsyncTask<Object, Void, Void> {
-        protected Void doInBackground(Object... arg) {
-            if(  MainActivity.this.mediaPlayer == null || ! MainActivity.this.mediaPlayer.isPlaying())
-            {
-                String url = "http://deepmine.by:8000/deepmine";
-                MainActivity.this.mediaPlayer = new MediaPlayer();
-                try {
-                    MainActivity.this.mediaPlayer.setDataSource(url);
-                    MainActivity.this.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                    MainActivity.this.mediaPlayer.prepare();
-                    MainActivity.this.mediaPlayer.start();
-                } catch (Exception e) {
-                    Log.d(TAG, "Exception in streaming mediaplayer e = " + e);
-                }
-            }
-            return null;
-        }
-
-        protected void onPostExecute() {
-
-        }
     }
 
 
