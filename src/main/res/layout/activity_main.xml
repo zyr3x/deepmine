@@ -70,4 +70,20 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/title_events"
+            android:id="@+id/textView"
+            android:textColor="@color/holo_purple"
+            android:layout_gravity="left|center_vertical"
+            android:layout_margin="5dip"/>
+
+    <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listEvents"
+            android:background="#000000"/>
 </LinearLayout>

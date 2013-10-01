@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="menu_row_element_names">
+        <item>bg</item>
+        <item>title</item>
+        <item>url</item>
+        <item>ess_id</item>
+    </string-array>
+
+    <integer-array name="menu_row_element_ids">
+        <item>@+id/imageView</item>
+        <item>@+id/textView</item>
+        <item>@+id/link</item>
+        <item>@+id/ess_id</item>
+    </integer-array>
+</resources>
