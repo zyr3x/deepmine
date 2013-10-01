@@ -27,7 +27,7 @@ public class MainActivity extends Activity {
 
     public static String TAG = "DEEPMINE";
     public static MediaPlayer mediaPlayer;
-    public static Button playBtn;
+    public static ImageButton playBtn;
     public static TextView trackTitle;
 
     private AQuery aq;
@@ -86,12 +86,13 @@ public class MainActivity extends Activity {
     {
         AsyncTask task = new playTask();
         task.execute();
+        playBtn.setImageResource(R.drawable.ic_media_pause);
     }
 
     public void stopMedia()
     {
         mediaPlayer.stop();
-        playBtn.setText("Play");
+        playBtn.setImageResource(R.drawable.ic_media_play);
     }
 
     public void onPlay(View view)
@@ -121,7 +122,6 @@ public class MainActivity extends Activity {
                 } catch (Exception e) {
                     Log.d(TAG, "Exception in streaming mediaplayer e = " + e);
                 }
-                //MainActivity.this.playBtn.setText("Stop");
             }
             return null;
         }

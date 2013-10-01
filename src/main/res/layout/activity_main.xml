@@ -23,7 +23,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/tackTitle"
         android:textColor="#FFFFFF"
-        android:text="asdasd - asdfsdfsadasdsdasdsda sda s"
         android:layout_gravity="center"
         android:textSize="18dp"
         android:textStyle="normal"
