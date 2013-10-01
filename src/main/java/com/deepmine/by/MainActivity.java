@@ -8,8 +8,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
@@ -27,8 +26,9 @@ public class MainActivity extends Activity {
 
     public static String TAG = "DEEPMINE";
     public static MediaPlayer mediaPlayer;
-    public static ImageButton playBtn;
-    public static TextView trackTitle;
+    public static ImageView playBtn;
+    public static TextView trackTitle1;
+    public static TextView trackTitle2;
 
     private AQuery aq;
 
@@ -37,8 +37,9 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         aq =new AQuery(this);
-        playBtn =(ImageButton) findViewById(R.id.playBtn);
-        trackTitle =  (TextView) findViewById(R.id.tackTitle);
+        playBtn =(ImageView) findViewById(R.id.playBtn);
+        trackTitle1 =  (TextView) findViewById(R.id.tackTitle1);
+        trackTitle2 =  (TextView) findViewById(R.id.tackTitle2);
         updateTitle();
     }
 
@@ -57,7 +58,7 @@ public class MainActivity extends Activity {
                             try
                             {
                                 String title = json.getString("title");
-                                MainActivity.this.trackTitle.setText(title);
+                                MainActivity.this.trackTitle1.setText(title);
                                 aq.id(R.id.trackCover).image("http://deepmine.by/d/static/music/cover/"+title+".jpg");
                             }
                             catch (JSONException e)
