@@ -9,7 +9,7 @@
                   xmlns:tools="http://schemas.android.com/tools"
                   android:layout_width="match_parent"
                   android:layout_height="120dp"
-                  android:background="#1e2121">
+                  android:background="@color/dim_foreground_light_disabled">
 
     <ImageView
             android:layout_width="120dp"
@@ -22,44 +22,52 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tackTitle1"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:layout_gravity="center"
         android:textSize="32dp"
         android:textStyle="bold|normal"
         android:singleLine="true"
-        android:text="artist name"
+        android:text="@string/playername"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
         android:layout_toRightOf="@+id/trackCover"
-        android:paddingLeft="10dp"/>
+        android:paddingLeft="10dp"
+        android:layout_toLeftOf="@+id/linearLayout"/>
 
     <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tackTitle2"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@color/dim_foreground_inverse_disabled_holo_light"
                 android:layout_gravity="center"
                 android:textSize="18dp"
-                android:text="tack name"
+                android:text="@string/introrext"
                 android:textStyle="normal"
                 android:singleLine="true"
                 android:layout_below="@+id/tackTitle1"
-                android:layout_alignParentRight="true"
                 android:layout_toRightOf="@+id/trackCover"
-                android:paddingLeft="10dp"/>
+                android:paddingLeft="10dp"
+                android:layout_toLeftOf="@+id/linearLayout"/>
 
-        <ImageView
-                android:id="@+id/playBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:onClick="onPlay"
-                android:src="@drawable/ic_media_play"
-                android:focusableInTouchMode="true"
-                android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@+id/trackCover"
-                />
+        <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="fill_parent"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:id="@+id/linearLayout"
+                android:orientation="vertical"
+                android:background="@drawable/click"
+                android:onClick="onPlay">
+
+            <ImageView
+                    android:id="@+id/playBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_media_play"
+                    android:focusableInTouchMode="true"
+                    />
+        </LinearLayout>
 
     </RelativeLayout>
 </LinearLayout>

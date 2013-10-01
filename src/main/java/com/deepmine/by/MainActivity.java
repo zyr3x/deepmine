@@ -26,18 +26,18 @@ import java.util.TimerTask;
 public class MainActivity extends Activity {
 
     public static String TAG = "DEEPMINE";
-    public static ImageView playBtn;
+    private static ImageView playBtn;
     public static TextView trackTitle1;
     public static TextView trackTitle2;
-    public Intent radioService;
+    private Intent radioService;
 
-    private AQuery aq;
+    private AQuery aq = new AQuery(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        aq =new AQuery(this);
+        getActionBar().hide();
 
         playBtn =(ImageView) findViewById(R.id.playBtn);
         trackTitle1 =  (TextView) findViewById(R.id.tackTitle1);
@@ -65,10 +65,12 @@ public class MainActivity extends Activity {
                                 String title = json.getString("title");
                                 String artist = json.getString("artist");
                                 String track = json.getString("track");
+
                                 MainActivity.this.trackTitle1.setText(artist);
                                 MainActivity.this.trackTitle2.setText(track);
 
                                 aq.id(R.id.trackCover).image("http://deepmine.by/d/static/music/cover/"+title+".jpg",true, true, 0, R.drawable.ic_launcher_full);
+                                updatePlayButton();
                             }
                             catch (JSONException e)
                             {
@@ -91,26 +93,36 @@ public class MainActivity extends Activity {
         timer.scheduleAtFixedRate(updateTask, 0, 5000);
     }
 
-
-    public void playMedia()
-    {
-        startService(radioService);
-        playBtn.setImageResource(R.drawable.ic_media_pause);
-    }
-
-    public void stopMedia()
-    {
-        stopService(radioService);
-        playBtn.setImageResource(R.drawable.ic_media_play);
-    }
-
     public void onPlay(View view)
     {
-        //if(!RadioService.mediaPlayer.isPlaying())
-        //    stopMedia();
-        //else
+        if(RadioService.isPlaying())
+            stopMedia();
+        else
             playMedia();
     }
+
+    private void playMedia()
+    {
+        startService(radioService);
+        updatePlayButton();
+    }
+
+    private void stopMedia()
+    {
+        stopService(radioService);
+        RadioService.stop();
+        updatePlayButton();
+    }
+
+    private void updatePlayButton()
+    {
+        if(RadioService.isPlaying())
+            playBtn.setImageResource(R.drawable.ic_media_pause);
+        else
+            playBtn.setImageResource(R.drawable.ic_media_play);
+    }
+
+
 
 
 }

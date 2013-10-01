@@ -2,6 +2,8 @@
 <resources>
 
     <string name="app_name">DEEPMINE</string>
+    <string name="playername">DEEPMINE</string>
+    <string name="introrext">Internet Radio</string>
     <string name="action_settings">Settings</string>
 
 </resources>
