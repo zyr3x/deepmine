@@ -9,14 +9,14 @@
                   xmlns:tools="http://schemas.android.com/tools"
                   android:layout_width="match_parent"
                   android:layout_height="120dp"
-                  >
+                  android:background="#1e2121">
 
     <ImageView
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:id="@+id/trackCover"
             android:scaleType="fitCenter"
-            />
+            android:src="@drawable/ic_launcher_full"/>
 
     <TextView
         android:layout_width="fill_parent"
@@ -24,12 +24,14 @@
         android:id="@+id/tackTitle1"
         android:textColor="#FFFFFF"
         android:layout_gravity="center"
-        android:textSize="20dp"
+        android:textSize="32dp"
         android:textStyle="bold|normal"
         android:singleLine="true"
+        android:text="artist name"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_toRightOf="@+id/trackCover"/>
+        android:layout_toRightOf="@+id/trackCover"
+        android:paddingLeft="10dp"/>
 
     <TextView
                 android:layout_width="fill_parent"
@@ -37,13 +39,14 @@
                 android:id="@+id/tackTitle2"
                 android:textColor="@android:color/darker_gray"
                 android:layout_gravity="center"
-                android:textSize="15dp"
+                android:textSize="18dp"
+                android:text="tack name"
                 android:textStyle="normal"
                 android:singleLine="true"
                 android:layout_below="@+id/tackTitle1"
                 android:layout_alignParentRight="true"
                 android:layout_toRightOf="@+id/trackCover"
-            />
+                android:paddingLeft="10dp"/>
 
         <ImageView
                 android:id="@+id/playBtn"
@@ -55,7 +58,8 @@
                 android:src="@drawable/ic_media_play"
                 android:focusableInTouchMode="true"
                 android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@+id/trackCover"/>
+                android:layout_toRightOf="@+id/trackCover"
+                />
 
     </RelativeLayout>
 </LinearLayout>

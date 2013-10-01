@@ -58,8 +58,12 @@ public class MainActivity extends Activity {
                             try
                             {
                                 String title = json.getString("title");
-                                MainActivity.this.trackTitle1.setText(title);
-                                aq.id(R.id.trackCover).image("http://deepmine.by/d/static/music/cover/"+title+".jpg");
+                                String artist = json.getString("artist");
+                                String track = json.getString("track");
+                                MainActivity.this.trackTitle1.setText(artist);
+                                MainActivity.this.trackTitle2.setText(track);
+
+                                aq.id(R.id.trackCover).image("http://deepmine.by/d/static/music/cover/"+title+".jpg",true, true, 0, R.drawable.ic_launcher_full);
                             }
                             catch (JSONException e)
                             {
