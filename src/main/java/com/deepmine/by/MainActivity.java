@@ -29,12 +29,14 @@ import com.deepmine.by.adapters.MultiSimpleAdapters;
 public class MainActivity extends Activity {
 
     public static String TAG = "DEEPMINE";
-    private static ImageView mPlayBtn;
+
+    public static ImageView mPlayBtn;
     public static TextView mTrackTitle1;
     public static TextView mTrackTitle2;
     public static ListView mListView;
+
     private Intent radioService;
-    Blocks blocks;
+
     private AQuery aq = new AQuery(this);
 
     MultiSimpleAdapters multiAdapter = new MultiSimpleAdapters();
@@ -112,7 +114,8 @@ public class MainActivity extends Activity {
                 if (json != null) {
                     try
                     {
-                        blocks = new Blocks(json.getJSONArray("data"));
+                        Blocks blocks = new Blocks(json.getJSONArray("data"));
+
                         SimpleAdapter simpleAdapter = new SimpleAdapter( getApplicationContext(),
                                 blocks.getList(),
                                 R.layout.menu_row,
@@ -151,7 +154,6 @@ public class MainActivity extends Activity {
         });
 
     }
-
 
 
 
