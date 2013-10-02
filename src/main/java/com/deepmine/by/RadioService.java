@@ -30,6 +30,9 @@ public class RadioService extends Service {
     public static boolean isStartService = false;
     private AQuery aq = new AQuery(this);
     private static String lastTitle = "";
+    public static Timer timer = new Timer();
+    public static final int NOTIFICATION_ID = 1;
+    private static NotificationManager mNotificationManager = null;
 
     @Override
     public void onCreate() {
@@ -52,37 +55,38 @@ public class RadioService extends Service {
 
     protected void updateTitle()
     {
-        Timer timer = new Timer();
-
         class UpdateTask extends TimerTask {
 
             public void run() {
-                AQuery ajax = aq.ajax("http://deepmine.by/d/index.php/ajaxRadioTitle", JSONObject.class, new AjaxCallback<JSONObject>() {
+                if(isStartService)
+                {
+                    aq.ajax("http://deepmine.by/d/index.php/ajaxRadioTitle", JSONObject.class, new AjaxCallback<JSONObject>() {
 
-                    @Override
-                    public void callback(String url, JSONObject json, AjaxStatus status) {
-                        if (json != null) {
-                            try
-                            {
-
-                                if(!lastTitle.equals(json.getString("title")))
+                        @Override
+                        public void callback(String url, JSONObject json, AjaxStatus status) {
+                            if (json != null) {
+                                try
                                 {
-                                    lastTitle = json.getString("title");
 
-                                    if(mNotificationManager!=null)
-                                        updateNotification(json.getString("artist"),json.getString("track"));
-                                    else
-                                        initNotification(json.getString("artist"),json.getString("track"));
+                                    if(!lastTitle.equals(json.getString("title")))
+                                    {
+                                        lastTitle = json.getString("title");
+
+                                        if(mNotificationManager!=null)
+                                            updateNotification(json.getString("artist"),json.getString("track"));
+                                        else
+                                            initNotification(json.getString("artist"),json.getString("track"));
+                                    }
+
                                 }
-
-                            }
-                            catch (JSONException e)
-                            {
-                                Log.d(TAG, "Exception parse");
+                                catch (JSONException e)
+                                {
+                                    Log.d(TAG, "Exception parse");
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
 
             }
         }
@@ -101,15 +105,7 @@ public class RadioService extends Service {
     @Override
     public void onDestroy() {
         Log.d(TAG, "STOP SERVICE");
-        isStartService = false;
-        lastTitle = "";
-
-        if(mNotificationManager!=null)
-            mNotificationManager.cancel(NOTIFICATION_ID);
-
-        if(mediaPlayer!=null)
-            mediaPlayer.stop();
-
+        stop();
         super.onDestroy();
     }
 
@@ -117,10 +113,15 @@ public class RadioService extends Service {
     {
         isStartService = false;
         lastTitle = "";
+
+        if(mNotificationManager!=null)
+            mNotificationManager.cancel(NOTIFICATION_ID);
+
+        if(timer!=null)
+            timer.cancel();
+
         if(mediaPlayer!=null)
-        {
             mediaPlayer.stop();
-        }
     }
 
     public static boolean isPlaying()
@@ -130,11 +131,6 @@ public class RadioService extends Service {
         else
            return false;
     }
-
-    // --------------------Push Notification
-    // Set up the notification ID
-    public static final int NOTIFICATION_ID = 1;
-    private NotificationManager mNotificationManager;
 
     // Create Notification
     private void initNotification(String title1, String title2) {
