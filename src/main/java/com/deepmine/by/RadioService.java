@@ -55,6 +55,7 @@ public class RadioService extends Service {
 
     protected void updateTitle()
     {
+        timer = new Timer();
         class UpdateTask extends TimerTask {
 
             public void run() {
