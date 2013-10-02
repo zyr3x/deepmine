@@ -25,6 +25,7 @@ import java.util.TimerTask;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.models.Blocks;
 import com.deepmine.by.adapters.MultiSimpleAdapters;
+import com.google.analytics.tracking.android.EasyTracker;
 
 public class MainActivity extends Activity {
 
@@ -186,6 +187,19 @@ public class MainActivity extends Activity {
             mPlayBtn.setImageResource(R.drawable.ic_media_play);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+         // The rest of your onStart() code.
+        EasyTracker.getInstance().activityStart(this); // Add this method.
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+         // The rest of your onStop() code.
+        EasyTracker.getInstance().activityStop(this); // Add this method.
+    }
 
 
 
