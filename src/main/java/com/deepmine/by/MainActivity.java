@@ -1,5 +1,7 @@
 package com.deepmine.by;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,12 +26,11 @@ import java.util.TimerTask;
 
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.models.Blocks;
-import com.deepmine.by.adapters.MultiSimpleAdapters;
 import com.google.analytics.tracking.android.EasyTracker;
 
 public class MainActivity extends Activity {
 
-    public static String TAG = "DEEPMINE";
+    public static String TAG = "DEEPMINE:MainActivity";
 
     public static ImageView mPlayBtn;
     public static TextView mTrackTitle1;
@@ -39,8 +40,6 @@ public class MainActivity extends Activity {
     private Intent radioService;
 
     private AQuery aq = new AQuery(this);
-
-    MultiSimpleAdapters multiAdapter = new MultiSimpleAdapters();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,23 +74,15 @@ public class MainActivity extends Activity {
                         if (json != null) {
                             try
                             {
-                                String title = json.getString("title");
-                                String artist = json.getString("artist");
-                                String track = json.getString("track");
-
-                                MainActivity.this.mTrackTitle1.setText(artist);
-                                MainActivity.this.mTrackTitle2.setText(track);
-
-                                aq.id(R.id.trackCover).image("http://deepmine.by/d/static/music/cover/"+title+".jpg",true, true, 0, R.drawable.ic_launcher_full);
+                                mTrackTitle1.setText(json.getString("artist"));
+                                mTrackTitle2.setText(json.getString("track"));
+                                aq.id(R.id.trackCover).image("http://deepmine.by/d/static/music/cover/"+json.getString("title")+".jpg",true, true, 0, R.drawable.ic_launcher_full);
                                 updatePlayButton();
                             }
                             catch (JSONException e)
                             {
                                 Log.d(TAG, "Exception parse");
                             }
-
-                            Log.d(TAG, "JSON:" + json.toString());
-
                         } else {
                             Log.d(TAG, "Exception in ajax:" + status.getCode());
 
@@ -156,10 +147,11 @@ public class MainActivity extends Activity {
 
     }
 
-
-
     public void onPlay(View view)
     {
+        if(RadioService.isStartService)
+            cancelNotification();
+
         if(RadioService.isPlaying())
             stopMedia();
         else
@@ -177,15 +169,28 @@ public class MainActivity extends Activity {
         stopService(radioService);
         RadioService.stop();
         updatePlayButton();
+        cancelNotification();
     }
 
     private void updatePlayButton()
     {
         if(RadioService.isPlaying())
+        {
             mPlayBtn.setImageResource(R.drawable.ic_media_pause);
+        }
         else
+        {
             mPlayBtn.setImageResource(R.drawable.ic_media_play);
+        }
     }
+
+    // -- Cancel Notification
+    public void cancelNotification() {
+        String notificationServiceStr = Context.NOTIFICATION_SERVICE;
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(notificationServiceStr);
+        mNotificationManager.cancel(RadioService.NOTIFICATION_ID);
+    }
+
 
     @Override
     public void onStart() {
@@ -201,6 +206,11 @@ public class MainActivity extends Activity {
         EasyTracker.getInstance().activityStop(this); // Add this method.
     }
 
-
+    @Override
+    public void onDestroy() {
+        RadioService.stop();
+        cancelNotification();
+        super.onDestroy();
+    }
 
 }
