@@ -25,14 +25,15 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.helpers.ItemImageBinder;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.models.Blocks;
 import com.google.analytics.tracking.android.EasyTracker;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements Constants {
 
-    public static String TAG = "DEEPMINE:MainActivity";
+    public static String TAG = MAIN_TAG+":MainActivity";
 
     public static ImageView mPlayBtn;
     public static TextView mTrackTitle1;
@@ -73,7 +74,7 @@ public class MainActivity extends Activity {
         class UpdateTask extends TimerTask {
 
             public void run() {
-                aq.ajax("http://deepmine.by/d/index.php/ajaxRadioTitle", JSONObject.class, new AjaxCallback<JSONObject>() {
+                aq.ajax(RADIO_DATA_URL, JSONObject.class, new AjaxCallback<JSONObject>() {
 
                     @Override
                     public void callback(String url, JSONObject json, AjaxStatus status) {
@@ -82,8 +83,7 @@ public class MainActivity extends Activity {
                             {
                                 mTrackTitle1.setText(json.getString("artist"));
                                 mTrackTitle2.setText(json.getString("track"));
-                                aq.id(R.id.trackCover).image("http://deepmine.by/d/static/music/cover/"+json.getString("title")+".jpg",true, true, 0, R.drawable.ic_launcher_full);
-
+                                aq.id(R.id.trackCover).image(RADIO_COVER_URL+json.getString("title")+".jpg",true, true, 0, R.drawable.ic_launcher_full);
                             }
                             catch (JSONException e)
                             {
@@ -102,7 +102,7 @@ public class MainActivity extends Activity {
 
     public void updateEvents()
     {
-        aq.ajax("http://deepmine.by/android/hotlist", JSONObject.class, new AjaxCallback<JSONObject>() {
+        aq.ajax(EVENT_URL, JSONObject.class, new AjaxCallback<JSONObject>() {
 
             @Override
             public void callback(String url, JSONObject json, AjaxStatus status) {
