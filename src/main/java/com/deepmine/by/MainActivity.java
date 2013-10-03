@@ -83,7 +83,7 @@ public class MainActivity extends Activity {
                                 mTrackTitle1.setText(json.getString("artist"));
                                 mTrackTitle2.setText(json.getString("track"));
                                 aq.id(R.id.trackCover).image("http://deepmine.by/d/static/music/cover/"+json.getString("title")+".jpg",true, true, 0, R.drawable.ic_launcher_full);
-                                updatePlayButton();
+
                             }
                             catch (JSONException e)
                             {
@@ -92,7 +92,7 @@ public class MainActivity extends Activity {
                         }
                     }
                 });
-
+                updatePlayStatus();
             }
         }
 
@@ -166,17 +166,17 @@ public class MainActivity extends Activity {
         loadingDialog.show();
 
         startService(radioService);
-        updatePlayButton();
+        updatePlayStatus();
     }
 
     private void stopMedia()
     {
         stopService(radioService);
         RadioService.stop();
-        updatePlayButton();
+        updatePlayStatus();
     }
 
-    private void updatePlayButton()
+    private void updatePlayStatus()
     {
         if(RadioService.isPlaying())
         {
