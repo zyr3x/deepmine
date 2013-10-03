@@ -5,15 +5,18 @@ import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.util.Log;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 
+
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,24 +36,43 @@ public class RadioService extends Service {
     public static Timer timer = new Timer();
     public static final int NOTIFICATION_ID = 1;
     private static NotificationManager mNotificationManager = null;
+    private static MediaTask mediaTask = null;
+    private static boolean isError = false;
 
     @Override
     public void onCreate() {
+        super.onCreate();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startid) {
         Log.d(TAG, "START SERVICE");
-        isStartService = true;
+        mediaTask = new MediaTask();
+        mediaTask.execute();
+        return START_STICKY;
+    }
+
+
+    private void stopService() {
+        stop();
+    }
+
+    public void start()
+    {
         try {
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setDataSource("http://deepmine.by:8000/deepmine");
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.prepare();
             mediaPlayer.start();
+
+            isStartService = true;
         } catch (Exception e) {
+            isError = true;
+            isStartService = false;
+            stop();
             Log.d(TAG, "Exception in streaming mediaplayer e = " + e);
         }
-
-        updateTitle();
-
-        super.onCreate();
     }
 
     protected void updateTitle()
@@ -68,21 +90,15 @@ public class RadioService extends Service {
                             if (json != null) {
                                 try
                                 {
-
                                     if(!lastTitle.equals(json.getString("title")))
                                     {
                                         lastTitle = json.getString("title");
-
-                                        if(mNotificationManager!=null)
-                                            updateNotification(json.getString("artist"),json.getString("track"));
-                                        else
-                                            initNotification(json.getString("artist"),json.getString("track"));
+                                        updateNotification(json.getString("artist"),json.getString("track"));
                                     }
-
                                 }
                                 catch (JSONException e)
                                 {
-                                    Log.d(TAG, "Exception parse");
+                                    Log.d(TAG, "ERROR JSON");
                                 }
                             }
                         }
@@ -115,6 +131,9 @@ public class RadioService extends Service {
         isStartService = false;
         lastTitle = "";
 
+        if(mediaTask !=null)
+            mediaTask.cancel(false);
+
         if(mNotificationManager!=null)
             mNotificationManager.cancel(NOTIFICATION_ID);
 
@@ -133,29 +152,39 @@ public class RadioService extends Service {
            return false;
     }
 
-    // Create Notification
-    private void initNotification(String title1, String title2) {
-
-        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        Notification notification = new Notification(R.drawable.ic_media_play, "DEEPMINE", System.currentTimeMillis());
-        notification.flags = Notification.FLAG_ONGOING_EVENT;
-
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,notificationIntent, 0);
-        notification.setLatestEventInfo(getApplicationContext(), title1, title2, contentIntent);
-
-        mNotificationManager.notify(NOTIFICATION_ID, notification);
+    public static boolean isErrors()
+    {
+        return isError;
+    }
+    public static void cleanErrors()
+    {
+         isError = false;
     }
 
     private void updateNotification(String title1, String title2) {
-        Notification notification = new Notification(R.drawable.ic_media_play, "DEEPMINE", System.currentTimeMillis());
+
+        if(mNotificationManager==null)
+            mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Notification notification = new Notification(R.drawable.ic_media_play, "DEEPMINE RADIO", System.currentTimeMillis());
         notification.flags = Notification.FLAG_ONGOING_EVENT;
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,notificationIntent, 0);
         notification.setLatestEventInfo(getApplicationContext(), title1, title2, contentIntent);
+        mNotificationManager.notify(NOTIFICATION_ID,notification);
+    }
 
-        mNotificationManager.notify(NOTIFICATION_ID, notification);
+    class MediaTask extends AsyncTask<Object, Void, Boolean> {
+
+        protected Boolean doInBackground(Object... arg) {
+            start();
+            return true;
+        }
+
+        protected void onPostExecute(Boolean flag) {
+            if(flag)
+                updateTitle();
+        }
     }
 
 

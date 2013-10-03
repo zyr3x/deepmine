@@ -1,10 +1,10 @@
 package com.deepmine.by;
 
-import android.app.NotificationManager;
-import android.content.Context;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Build;
 import android.app.Activity;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -24,6 +25,7 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.deepmine.by.helpers.ItemImageBinder;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.models.Blocks;
 import com.google.analytics.tracking.android.EasyTracker;
@@ -36,7 +38,7 @@ public class MainActivity extends Activity {
     public static TextView mTrackTitle1;
     public static TextView mTrackTitle2;
     public static ListView mListView;
-
+    private ProgressDialog loadingDialog = null;
     private Intent radioService;
 
     private AQuery aq = new AQuery(this);
@@ -45,9 +47,13 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getActionBar().hide();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            getActionBar().hide();
+        }
 
         ResourceHelper.getInstance().init(this);
+        EasyTracker.getInstance().activityStart(this); // Add this method.
 
         mPlayBtn =(ImageView) findViewById(R.id.playBtn);
         mTrackTitle1 =  (TextView) findViewById(R.id.tackTitle1);
@@ -67,7 +73,7 @@ public class MainActivity extends Activity {
         class UpdateTask extends TimerTask {
 
             public void run() {
-                AQuery ajax = aq.ajax("http://deepmine.by/d/index.php/ajaxRadioTitle", JSONObject.class, new AjaxCallback<JSONObject>() {
+                aq.ajax("http://deepmine.by/d/index.php/ajaxRadioTitle", JSONObject.class, new AjaxCallback<JSONObject>() {
 
                     @Override
                     public void callback(String url, JSONObject json, AjaxStatus status) {
@@ -83,9 +89,6 @@ public class MainActivity extends Activity {
                             {
                                 Log.d(TAG, "Exception parse");
                             }
-                        } else {
-                            Log.d(TAG, "Exception in ajax:" + status.getCode());
-
                         }
                     }
                 });
@@ -99,7 +102,7 @@ public class MainActivity extends Activity {
 
     public void updateEvents()
     {
-        AQuery ajax = aq.ajax("http://deepmine.by/android/hotlist", JSONObject.class, new AjaxCallback<JSONObject>() {
+        aq.ajax("http://deepmine.by/android/hotlist", JSONObject.class, new AjaxCallback<JSONObject>() {
 
             @Override
             public void callback(String url, JSONObject json, AjaxStatus status) {
@@ -127,6 +130,8 @@ public class MainActivity extends Activity {
                             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(((TextView) view
                                     .findViewById(R.id.link)).getText().toString()));
                             startActivity(browserIntent);
+
+
                         }
                     });
                         simpleAdapter.notifyDataSetChanged();
@@ -136,10 +141,7 @@ public class MainActivity extends Activity {
                         Log.d(TAG, "Exception parse");
                     }
 
-                    Log.d(TAG, "JSON:" + json.toString());
 
-                } else {
-                    Log.d(TAG, "Exception in ajax:" + status.getCode());
 
                 }
             }
@@ -149,9 +151,6 @@ public class MainActivity extends Activity {
 
     public void onPlay(View view)
     {
-        if(RadioService.isStartService)
-            cancelNotification();
-
         if(RadioService.isPlaying())
             stopMedia();
         else
@@ -160,6 +159,12 @@ public class MainActivity extends Activity {
 
     private void playMedia()
     {
+        loadingDialog = new ProgressDialog(this);
+        loadingDialog.setMessage(getText(R.string.connection));
+        loadingDialog.setCancelable(false);
+        loadingDialog.setCanceledOnTouchOutside(false);
+        loadingDialog.show();
+
         startService(radioService);
         updatePlayButton();
     }
@@ -169,47 +174,50 @@ public class MainActivity extends Activity {
         stopService(radioService);
         RadioService.stop();
         updatePlayButton();
-        cancelNotification();
     }
 
     private void updatePlayButton()
     {
         if(RadioService.isPlaying())
         {
+            if(loadingDialog!=null && loadingDialog.isShowing())
+                loadingDialog.dismiss();
+
             mPlayBtn.setImageResource(R.drawable.ic_media_pause);
         }
         else
         {
             mPlayBtn.setImageResource(R.drawable.ic_media_play);
         }
-    }
 
-    // -- Cancel Notification
-    public void cancelNotification() {
-        String notificationServiceStr = Context.NOTIFICATION_SERVICE;
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(notificationServiceStr);
-        mNotificationManager.cancel(RadioService.NOTIFICATION_ID);
+        if(RadioService.isErrors())
+        {
+            if(loadingDialog!=null && loadingDialog.isShowing())
+                loadingDialog.dismiss();
+
+            Toast.makeText(this,R.string.error_connection, Toast.LENGTH_SHORT).show();
+            RadioService.cleanErrors();
+            stopMedia();
+        }
+
     }
 
 
     @Override
     public void onStart() {
+        EasyTracker.getInstance().activityStart(this);
         super.onStart();
-         // The rest of your onStart() code.
-        EasyTracker.getInstance().activityStart(this); // Add this method.
     }
 
     @Override
     public void onStop() {
+        EasyTracker.getInstance().activityStop(this);
         super.onStop();
-         // The rest of your onStop() code.
-        EasyTracker.getInstance().activityStop(this); // Add this method.
     }
 
     @Override
     public void onDestroy() {
         RadioService.stop();
-        cancelNotification();
         super.onDestroy();
     }
 

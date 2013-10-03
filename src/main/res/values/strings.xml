@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">DEEPMINE</string>
     <string name="playername">DEEPMINE</string>
     <string name="introrext">Internet Radio</string>
     <string name="action_settings">Settings</string>
-    <string name="title_events">СОБЫТИЯ / EVENTS</string>
-
+    <string name="title_events">EVENTS</string>
+    <string name="error_connection">Error connecting to the radio server.</string>
+    <string name="connection">Connecting to radio server...</string>
 </resources>
