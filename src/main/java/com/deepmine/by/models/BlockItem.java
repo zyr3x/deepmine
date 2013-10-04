@@ -2,10 +2,10 @@ package com.deepmine.by.models;
 
 public class BlockItem {
 	
-    String title = ""; 
-    String id = "0";
-    String image = "";
-    String url = "";
+    public String title = "";
+    public String id = "0";
+    public String bg = "";
+    public String url = "";
     
 	public void setUrl(String url) {
 		this.url = url;
@@ -26,10 +26,10 @@ public class BlockItem {
 		this.id = id;
 	}
 	public String getImage() {
-		return image;
+		return bg;
 	}
 	public void setImage(String image) {
-		this.image = image;
+		this.bg = image;
 	}
 
     

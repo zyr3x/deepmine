@@ -2,10 +2,12 @@ package com.deepmine.by;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Build;
 import android.app.Activity;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,23 +28,24 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.deepmine.by.helpers.Constants;
-import com.deepmine.by.helpers.ItemImageBinder;
+import com.deepmine.by.adapters.ItemImageBinder;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.models.Blocks;
+import com.deepmine.by.services.DataService;
+import com.deepmine.by.services.RadioService;
 import com.google.analytics.tracking.android.EasyTracker;
 
 public class MainActivity extends Activity implements Constants {
 
     public static String TAG = MAIN_TAG+":MainActivity";
 
-    public static ImageView mPlayBtn;
-    public static TextView mTrackTitle1;
-    public static TextView mTrackTitle2;
-    public static ListView mListView;
+    private ImageView mPlayBtn;
+    private ListView mListView;
     private ProgressDialog loadingDialog = null;
-    private Intent radioService;
-
-    private AQuery aq = new AQuery(this);
+    private Intent _radioService;
+    private String _lastCover = "";
+    private AQuery _aQuery = new AQuery(this);
+    private final Handler _handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,53 +59,75 @@ public class MainActivity extends Activity implements Constants {
         ResourceHelper.getInstance().init(this);
         EasyTracker.getInstance().activityStart(this); // Add this method.
 
-        mPlayBtn =(ImageView) findViewById(R.id.playBtn);
-        mTrackTitle1 =  (TextView) findViewById(R.id.tackTitle1);
-        mTrackTitle2 =  (TextView) findViewById(R.id.tackTitle2);
+        startDataService();
+
+        mPlayBtn = (ImageView) findViewById(R.id.playBtn);
         mListView = (ListView) findViewById(R.id.listEvents);
 
-        radioService = new Intent(this, RadioService.class);
+        _radioService = new Intent(this, RadioService.class);
         updateTitle();
-        updateEvents();
+        getEvents();
 
+    }
+
+    @Override
+    public void onStart() {
+        EasyTracker.getInstance().activityStart(this);
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        EasyTracker.getInstance().activityStop(this);
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+
+        RadioService.stop();
+        stopService(_radioService);
+        super.onDestroy();
+    }
+
+    protected void startDataService()
+    {
+       if(!DataService.status())
+           startService(new Intent(getApplicationContext(),DataService.class));
     }
 
     protected void updateTitle()
     {
         Timer timer = new Timer();
-
-        class UpdateTask extends TimerTask {
-
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
             public void run() {
-                aq.ajax(RADIO_DATA_URL, JSONObject.class, new AjaxCallback<JSONObject>() {
+                _handler.post(new Runnable() {
+                    public void run() {
+                        if(!DataService.getDataTitle().title.equals(""))
+                        {
+                            _aQuery.id(R.id.artist).text(DataService.getDataTitle().artist);
+                            _aQuery.id(R.id.track).text(DataService.getDataTitle().track);
 
-                    @Override
-                    public void callback(String url, JSONObject json, AjaxStatus status) {
-                        if (json != null) {
-                            try
-                            {
-                                mTrackTitle1.setText(json.getString("artist"));
-                                mTrackTitle2.setText(json.getString("track"));
-                                aq.id(R.id.trackCover).image(RADIO_COVER_URL+json.getString("title")+".jpg",true, true, 0, R.drawable.ic_launcher_full);
-                            }
-                            catch (JSONException e)
-                            {
-                                Log.d(TAG, "Exception parse");
-                            }
+                            if(!_lastCover.equals(DataService.getDataTitle().cover))
+                                _aQuery.id(R.id.trackCover).image(
+                                        DataService.getDataTitle().cover,
+                                        true,
+                                        true,
+                                        0,
+                                        R.drawable.ic_launcher_full
+                            );
                         }
+                        updatePlayerStatus();
                     }
                 });
-                updatePlayStatus();
             }
-        }
-
-        TimerTask updateTask = new UpdateTask();
-        timer.scheduleAtFixedRate(updateTask, 0, 5000);
+        },1000,1000);
     }
 
-    public void updateEvents()
+    public void getEvents()
     {
-        aq.ajax(EVENT_URL, JSONObject.class, new AjaxCallback<JSONObject>() {
+        _aQuery.ajax(EVENT_URL, JSONObject.class, new AjaxCallback<JSONObject>() {
 
             @Override
             public void callback(String url, JSONObject json, AjaxStatus status) {
@@ -159,24 +184,27 @@ public class MainActivity extends Activity implements Constants {
 
     private void playMedia()
     {
+        showLoading();
+        startService(_radioService);
+    }
+
+    private void showLoading()
+    {
         loadingDialog = new ProgressDialog(this);
         loadingDialog.setMessage(getText(R.string.connection));
         loadingDialog.setCancelable(false);
         loadingDialog.setCanceledOnTouchOutside(false);
         loadingDialog.show();
-
-        startService(radioService);
-        updatePlayStatus();
     }
 
     private void stopMedia()
     {
-        stopService(radioService);
         RadioService.stop();
-        updatePlayStatus();
+        stopService(_radioService);
+        updatePlayerStatus();
     }
 
-    private void updatePlayStatus()
+    private void updatePlayerStatus()
     {
         if(RadioService.isPlaying())
         {
@@ -203,22 +231,5 @@ public class MainActivity extends Activity implements Constants {
     }
 
 
-    @Override
-    public void onStart() {
-        EasyTracker.getInstance().activityStart(this);
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        EasyTracker.getInstance().activityStop(this);
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        RadioService.stop();
-        super.onDestroy();
-    }
 
 }

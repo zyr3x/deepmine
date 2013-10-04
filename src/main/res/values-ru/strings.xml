@@ -5,7 +5,7 @@
     <string name="playername">DEEPMINE</string>
     <string name="introrext">Интернет радио</string>
     <string name="action_settings">Настройки</string>
-    <string name="title_events">СОБЫТИЯ</string>
+    <string name="title_events">События</string>
     <string name="error_connection">Ошибка подключения к радио.</string>
     <string name="connection">Подключение к серверу радио...</string>
 
