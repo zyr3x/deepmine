@@ -1,8 +1,10 @@
 package com.deepmine.by;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Build;
 import android.app.Activity;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -22,33 +25,36 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.deepmine.by.helpers.Constants;
+import com.deepmine.by.helpers.ItemImageBinder;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.models.Blocks;
-import com.deepmine.by.adapters.MultiSimpleAdapters;
 import com.google.analytics.tracking.android.EasyTracker;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements Constants {
 
-    public static String TAG = "DEEPMINE";
+    public static String TAG = MAIN_TAG+":MainActivity";
 
     public static ImageView mPlayBtn;
     public static TextView mTrackTitle1;
     public static TextView mTrackTitle2;
     public static ListView mListView;
-
+    private ProgressDialog loadingDialog = null;
     private Intent radioService;
 
     private AQuery aq = new AQuery(this);
-
-    MultiSimpleAdapters multiAdapter = new MultiSimpleAdapters();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getActionBar().hide();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            getActionBar().hide();
+        }
 
         ResourceHelper.getInstance().init(this);
+        EasyTracker.getInstance().activityStart(this); // Add this method.
 
         mPlayBtn =(ImageView) findViewById(R.id.playBtn);
         mTrackTitle1 =  (TextView) findViewById(R.id.tackTitle1);
@@ -68,37 +74,25 @@ public class MainActivity extends Activity {
         class UpdateTask extends TimerTask {
 
             public void run() {
-                AQuery ajax = aq.ajax("http://deepmine.by/d/index.php/ajaxRadioTitle", JSONObject.class, new AjaxCallback<JSONObject>() {
+                aq.ajax(RADIO_DATA_URL, JSONObject.class, new AjaxCallback<JSONObject>() {
 
                     @Override
                     public void callback(String url, JSONObject json, AjaxStatus status) {
                         if (json != null) {
                             try
                             {
-                                String title = json.getString("title");
-                                String artist = json.getString("artist");
-                                String track = json.getString("track");
-
-                                MainActivity.this.mTrackTitle1.setText(artist);
-                                MainActivity.this.mTrackTitle2.setText(track);
-
-                                aq.id(R.id.trackCover).image("http://deepmine.by/d/static/music/cover/"+title+".jpg",true, true, 0, R.drawable.ic_launcher_full);
-                                updatePlayButton();
+                                mTrackTitle1.setText(json.getString("artist"));
+                                mTrackTitle2.setText(json.getString("track"));
+                                aq.id(R.id.trackCover).image(RADIO_COVER_URL+json.getString("title")+".jpg",true, true, 0, R.drawable.ic_launcher_full);
                             }
                             catch (JSONException e)
                             {
                                 Log.d(TAG, "Exception parse");
                             }
-
-                            Log.d(TAG, "JSON:" + json.toString());
-
-                        } else {
-                            Log.d(TAG, "Exception in ajax:" + status.getCode());
-
                         }
                     }
                 });
-
+                updatePlayStatus();
             }
         }
 
@@ -108,7 +102,7 @@ public class MainActivity extends Activity {
 
     public void updateEvents()
     {
-        AQuery ajax = aq.ajax("http://deepmine.by/android/hotlist", JSONObject.class, new AjaxCallback<JSONObject>() {
+        aq.ajax(EVENT_URL, JSONObject.class, new AjaxCallback<JSONObject>() {
 
             @Override
             public void callback(String url, JSONObject json, AjaxStatus status) {
@@ -136,6 +130,8 @@ public class MainActivity extends Activity {
                             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(((TextView) view
                                     .findViewById(R.id.link)).getText().toString()));
                             startActivity(browserIntent);
+
+
                         }
                     });
                         simpleAdapter.notifyDataSetChanged();
@@ -145,18 +141,13 @@ public class MainActivity extends Activity {
                         Log.d(TAG, "Exception parse");
                     }
 
-                    Log.d(TAG, "JSON:" + json.toString());
 
-                } else {
-                    Log.d(TAG, "Exception in ajax:" + status.getCode());
 
                 }
             }
         });
 
     }
-
-
 
     public void onPlay(View view)
     {
@@ -168,39 +159,66 @@ public class MainActivity extends Activity {
 
     private void playMedia()
     {
+        loadingDialog = new ProgressDialog(this);
+        loadingDialog.setMessage(getText(R.string.connection));
+        loadingDialog.setCancelable(false);
+        loadingDialog.setCanceledOnTouchOutside(false);
+        loadingDialog.show();
+
         startService(radioService);
-        updatePlayButton();
+        updatePlayStatus();
     }
 
     private void stopMedia()
     {
         stopService(radioService);
         RadioService.stop();
-        updatePlayButton();
+        updatePlayStatus();
     }
 
-    private void updatePlayButton()
+    private void updatePlayStatus()
     {
         if(RadioService.isPlaying())
+        {
+            if(loadingDialog!=null && loadingDialog.isShowing())
+                loadingDialog.dismiss();
+
             mPlayBtn.setImageResource(R.drawable.ic_media_pause);
+        }
         else
+        {
             mPlayBtn.setImageResource(R.drawable.ic_media_play);
+        }
+
+        if(RadioService.isErrors())
+        {
+            if(loadingDialog!=null && loadingDialog.isShowing())
+                loadingDialog.dismiss();
+
+            Toast.makeText(this,R.string.error_connection, Toast.LENGTH_SHORT).show();
+            RadioService.cleanErrors();
+            stopMedia();
+        }
+
     }
+
 
     @Override
     public void onStart() {
+        EasyTracker.getInstance().activityStart(this);
         super.onStart();
-         // The rest of your onStart() code.
-        EasyTracker.getInstance().activityStart(this); // Add this method.
     }
 
     @Override
     public void onStop() {
+        EasyTracker.getInstance().activityStop(this);
         super.onStop();
-         // The rest of your onStop() code.
-        EasyTracker.getInstance().activityStop(this); // Add this method.
     }
 
-
+    @Override
+    public void onDestroy() {
+        RadioService.stop();
+        super.onDestroy();
+    }
 
 }
