@@ -19,11 +19,14 @@
                 />
 
     <ImageView
-            android:layout_width="130dp"
-            android:layout_height="130dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:id="@+id/trackCover"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_launcher_full"/>
+            android:src="@drawable/ic_launcher_full"
+            android:layout_marginLeft="23dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"/>
 
 
     <com.deepmine.by.components.TextViewPlus
@@ -37,10 +40,9 @@
         android:text="@string/playername"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/trackCover"
-        android:paddingLeft="10dp"
-        android:layout_toLeftOf="@+id/linearLayout"
         custom:customFont="fonts/engravers-gothic-bt.ttf"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp"
+        android:layout_alignRight="@+id/track"/>
 
     <com.deepmine.by.components.TextViewPlus
                 android:layout_width="fill_parent"
@@ -54,7 +56,6 @@
                 android:singleLine="true"
                 android:layout_below="@+id/artist"
                 android:layout_toRightOf="@+id/trackCover"
-                android:paddingLeft="10dp"
                 android:layout_toLeftOf="@+id/linearLayout"
                 custom:customFont="fonts/engravers-gothic-bt.ttf"/>
 
@@ -83,10 +84,10 @@
         <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_below="@+id/trackCover"
-                android:layout_alignParentLeft="true"
-                android:background="@drawable/header_bg">
+                android:layout_height="45dp"
+                android:background="@drawable/header_bg"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true">
 
             <com.deepmine.by.components.TextViewPlus
                     android:layout_width="516dp"
