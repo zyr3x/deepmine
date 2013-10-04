@@ -1,5 +1,8 @@
 package com.deepmine.by.models;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -20,6 +23,9 @@ public class Blocks {
     public Blocks(JSONArray objects)
     {
         ArrayList<BlockItem> arrayCatalog = new ArrayList<BlockItem>();
+
+       // ArrayList<BlockItem> arrayCatalog = new Gson().fromJson(objects.toString(), new TypeToken<ArrayList<BlockItem>>(){}.getType());
+
         if (objects.length() > 0)
             for (int i = 0; i < objects.length(); i++)
                 try {
@@ -43,6 +49,8 @@ public class Blocks {
         BlockItem model = new BlockItem();
         if (object != null)
         {
+            //Gson gson = new Gson();
+            //gson.fromJson(object,BlockItem.class.getTypeParameters(){}.get);
             model.setId(getValue(object,"id"));
             model.setImage(getValue(object,"bg"));
             model.setUrl(getValue(object,"url"));
@@ -98,7 +106,7 @@ public class Blocks {
         ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
         HashMap<String, Object> temp = new HashMap<String, Object>();
         temp.put("ess_id", _Blocks.get(i).getId());
-        temp.put("bg", _Blocks.get(i).image);
+        temp.put("bg", _Blocks.get(i).getImage());
         temp.put("title", _Blocks.get(i).title);
         temp.put("url", _Blocks.get(i).url);
         list.add(temp);

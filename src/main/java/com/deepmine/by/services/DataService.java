@@ -1,29 +1,16 @@
 package com.deepmine.by.services;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.IBinder;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
-import com.deepmine.by.R;
 import com.deepmine.by.helpers.Constants;
-import com.deepmine.by.helpers.ItemImageBinder;
-import com.deepmine.by.helpers.ResourceHelper;
-import com.deepmine.by.models.Blocks;
+import com.deepmine.by.helpers.GSONTransformer;
 import com.deepmine.by.models.DataTitle;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,7 +20,6 @@ import java.util.TimerTask;
  */
 public class DataService extends Service implements Constants {
 
-    public static String TAG = MAIN_TAG+":DataService";
     private static boolean _status = false;
     private static Timer _timer = new Timer();
     private AQuery _aQuery = new AQuery(this);
@@ -89,30 +75,13 @@ public class DataService extends Service implements Constants {
         class UpdateTask extends TimerTask {
 
             public void run() {
-                _aQuery.ajax(RADIO_DATA_URL, JSONObject.class, new AjaxCallback<JSONObject>() {
-
-                        @Override
-                        public void callback(String url, JSONObject json, AjaxStatus status) {
-                            if (json != null) {
-                                try
-                                {
-
-                                    if(!_dataTitle.title.equals(json.getString("title")))
-                                    {
-                                        _dataTitle.title = json.getString("title");
-                                        _dataTitle.artist = json.getString("artist");
-                                        _dataTitle.track = json.getString("track");
-                                        _dataTitle.cover = RADIO_COVER_URL+json.getString("title")+".jpg";
-                                    }
-                                }
-                                catch (JSONException e)
-                                {
-                                    Log.d(TAG, "ERROR JSON");
-                                }
-                            }
-                        }
-                    });
-                }
+                _aQuery.transformer(new GSONTransformer()).ajax(RADIO_DATA_URL, DataTitle.class, new AjaxCallback<DataTitle>(){
+                    public void callback(String url, DataTitle dataTitle, AjaxStatus status) {
+                            _dataTitle = dataTitle;
+                            _dataTitle.cover = RADIO_COVER_URL+_dataTitle.title+".jpg";
+                    }
+                });
+            }
         }
 
         TimerTask updateTask = new UpdateTask();

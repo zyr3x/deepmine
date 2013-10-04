@@ -1,4 +1,4 @@
-package com.deepmine.by.helpers;
+package com.deepmine.by.adapters;
 
 import com.androidquery.AQuery;
 import android.content.Context;

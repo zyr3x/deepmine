@@ -2,6 +2,7 @@ package com.deepmine.by;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Build;
@@ -27,7 +28,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.deepmine.by.helpers.Constants;
-import com.deepmine.by.helpers.ItemImageBinder;
+import com.deepmine.by.adapters.ItemImageBinder;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.models.Blocks;
 import com.deepmine.by.services.DataService;
@@ -39,8 +40,6 @@ public class MainActivity extends Activity implements Constants {
     public static String TAG = MAIN_TAG+":MainActivity";
 
     private ImageView mPlayBtn;
-    public static TextView mTrackTitle1;
-    public static TextView mTrackTitle2;
     private ListView mListView;
     private ProgressDialog loadingDialog = null;
     private Intent _radioService;
@@ -62,9 +61,7 @@ public class MainActivity extends Activity implements Constants {
 
         startDataService();
 
-        mPlayBtn =(ImageView) findViewById(R.id.playBtn);
-        mTrackTitle1 =  (TextView) findViewById(R.id.tackTitle1);
-        mTrackTitle2 =  (TextView) findViewById(R.id.tackTitle2);
+        mPlayBtn = (ImageView) findViewById(R.id.playBtn);
         mListView = (ListView) findViewById(R.id.listEvents);
 
         _radioService = new Intent(this, RadioService.class);
@@ -109,8 +106,8 @@ public class MainActivity extends Activity implements Constants {
                     public void run() {
                         if(!DataService.getDataTitle().title.equals(""))
                         {
-                            mTrackTitle1.setText(DataService.getDataTitle().artist);
-                            mTrackTitle2.setText(DataService.getDataTitle().track);
+                            _aQuery.id(R.id.artist).text(DataService.getDataTitle().artist);
+                            _aQuery.id(R.id.track).text(DataService.getDataTitle().track);
 
                             if(!_lastCover.equals(DataService.getDataTitle().cover))
                                 _aQuery.id(R.id.trackCover).image(
@@ -119,7 +116,7 @@ public class MainActivity extends Activity implements Constants {
                                         true,
                                         0,
                                         R.drawable.ic_launcher_full
-                                );
+                            );
                         }
                         updatePlayerStatus();
                     }
