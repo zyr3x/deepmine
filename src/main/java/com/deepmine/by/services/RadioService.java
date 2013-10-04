@@ -151,7 +151,7 @@ public class RadioService extends Service implements Constants{
         if(mNotificationManager==null)
             mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Notification notification = new Notification(R.drawable.ic_media_play, RADIO_TITLE, System.currentTimeMillis());
+        Notification notification = new Notification(R.drawable.ic_play, RADIO_TITLE, System.currentTimeMillis());
         notification.flags = Notification.FLAG_ONGOING_EVENT;
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,notificationIntent, 0);
