@@ -27,8 +27,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="com.deepmine.by.RadioService" >
-        </service>
+        <service android:name=".services.RadioService" ></service>
+        <service android:name=".services.DataService" ></service>
     </application>
 
 </manifest>

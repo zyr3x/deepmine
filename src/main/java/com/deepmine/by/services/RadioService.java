@@ -1,4 +1,4 @@
-package com.deepmine.by;
+package com.deepmine.by.services;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -6,20 +6,16 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 
-
-import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxCallback;
-import com.androidquery.callback.AjaxStatus;
+import com.deepmine.by.MainActivity;
+import com.deepmine.by.R;
 import com.deepmine.by.helpers.Constants;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -28,16 +24,19 @@ import java.util.TimerTask;
  * Created by zyr3x on 01.10.13.
  */
 public class RadioService extends Service implements Constants{
-    public static MediaPlayer mediaPlayer = null;
-    public static String TAG = MAIN_TAG+":RadioService";
-    public static boolean isStartService = false;
-    private AQuery aq = new AQuery(this);
-    private static String lastTitle = "";
-    public static Timer timer = new Timer();
-    public static final int NOTIFICATION_ID = 1;
+
+    private static String TAG = MAIN_TAG+":RadioService";
+
+    private static final int NOTIFICATION_ID = 1;
+    private static String _lastTitle = "";
+    private static boolean _isStartService = false;
+    private static boolean _isError = false;
+
+    private static Timer _timer = new Timer();
     private static NotificationManager mNotificationManager = null;
-    private static MediaTask mediaTask = null;
-    private static boolean isError = false;
+    private static MediaTask _mediaTask = null;
+    private static MediaPlayer _mediaPlayer = null;
+    private final Handler _handler = new Handler();
 
     @Override
     public void onCreate() {
@@ -46,8 +45,8 @@ public class RadioService extends Service implements Constants{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startid) {
-        mediaTask = new MediaTask();
-        mediaTask.execute();
+        _mediaTask = new MediaTask();
+        _mediaTask.execute();
         return START_STICKY;
     }
 
@@ -59,16 +58,16 @@ public class RadioService extends Service implements Constants{
     public void start()
     {
         try {
-            mediaPlayer = new MediaPlayer();
-            mediaPlayer.setDataSource(RADIO_SERVER_URL);
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.prepare();
-            mediaPlayer.start();
+            _mediaPlayer = new MediaPlayer();
+            _mediaPlayer.setDataSource(RADIO_SERVER_URL);
+            _mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            _mediaPlayer.prepare();
+            _mediaPlayer.start();
 
-            isStartService = true;
+            _isStartService = true;
         } catch (Exception e) {
-            isError = true;
-            isStartService = false;
+            _isError = true;
+            _isStartService = false;
             stop();
             Log.d(TAG, "Exception in streaming mediaplayer e = " + e);
         }
@@ -76,39 +75,28 @@ public class RadioService extends Service implements Constants{
 
     protected void updateTitle()
     {
-        timer = new Timer();
-        class UpdateTask extends TimerTask {
-
+        _timer = new Timer();
+        _timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
             public void run() {
-                if(isStartService)
-                {
-                    aq.ajax(RADIO_DATA_URL, JSONObject.class, new AjaxCallback<JSONObject>() {
+                _handler.post(new Runnable() {
+                    public void run() {
+                        if(_isStartService)
+                        {
+                            if(!_lastTitle.equals(DataService.getDataTitle().title))
+                            {
+                                _lastTitle = DataService.getDataTitle().title;
 
-                        @Override
-                        public void callback(String url, JSONObject json, AjaxStatus status) {
-                            if (json != null) {
-                                try
-                                {
-                                    if(!lastTitle.equals(json.getString("title")))
-                                    {
-                                        lastTitle = json.getString("title");
-                                        updateNotification(json.getString("artist"),json.getString("track"));
-                                    }
-                                }
-                                catch (JSONException e)
-                                {
-                                    Log.d(TAG, "ERROR JSON");
-                                }
+                                updateNotification(
+                                        DataService.getDataTitle().artist,
+                                        DataService.getDataTitle().track
+                                );
                             }
                         }
-                    });
-                }
-
+                    }
+                });
             }
-        }
-
-        TimerTask updateTask = new UpdateTask();
-        timer.scheduleAtFixedRate(updateTask, 0, 5000);
+        },1000,1000);
     }
 
 
@@ -125,37 +113,37 @@ public class RadioService extends Service implements Constants{
 
     public static void stop()
     {
-        isStartService = false;
-        lastTitle = "";
+        _isStartService = false;
+        _lastTitle = "";
 
-        if(mediaTask !=null)
-            mediaTask.cancel(false);
+        if(_mediaTask !=null)
+            _mediaTask.cancel(false);
 
         if(mNotificationManager!=null)
             mNotificationManager.cancel(NOTIFICATION_ID);
 
-        if(timer!=null)
-            timer.cancel();
+        if(_timer!=null)
+            _timer.cancel();
 
-        if(mediaPlayer!=null)
-            mediaPlayer.stop();
+        if(_mediaPlayer!=null)
+            _mediaPlayer.stop();
     }
 
     public static boolean isPlaying()
     {
-       if(mediaPlayer!= null)
-           return  isStartService;
+       if(_mediaPlayer!= null)
+           return  _isStartService;
         else
            return false;
     }
 
     public static boolean isErrors()
     {
-        return isError;
+        return _isError;
     }
     public static void cleanErrors()
     {
-         isError = false;
+         _isError = false;
     }
 
     private void updateNotification(String title1, String title2) {
