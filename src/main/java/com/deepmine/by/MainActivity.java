@@ -41,6 +41,8 @@ public class MainActivity extends Activity implements Constants {
 
     private ImageView mPlayBtn;
     private ListView mListView;
+    public static TextView mTrackArtist;
+    public static TextView mTrack;
     private ProgressDialog loadingDialog = null;
     private Intent _radioService;
     private String _lastCover = "";
@@ -60,7 +62,8 @@ public class MainActivity extends Activity implements Constants {
         EasyTracker.getInstance().activityStart(this); // Add this method.
 
         startDataService();
-
+        mTrackArtist =  (TextView) findViewById(R.id.artist);
+        mTrack =  (TextView) findViewById(R.id.track);
         mPlayBtn = (ImageView) findViewById(R.id.playBtn);
         mListView = (ListView) findViewById(R.id.listEvents);
 
@@ -106,17 +109,13 @@ public class MainActivity extends Activity implements Constants {
                     public void run() {
                         if(!DataService.getDataTitle().title.equals(""))
                         {
-                            _aQuery.id(R.id.artist).text(DataService.getDataTitle().artist);
-                            _aQuery.id(R.id.track).text(DataService.getDataTitle().track);
 
+                            mTrackArtist.setText(DataService.getDataTitle().artist);
+                            mTrack.setText(DataService.getDataTitle().track);
                             if(!_lastCover.equals(DataService.getDataTitle().cover))
-                                _aQuery.id(R.id.trackCover).image(
-                                        DataService.getDataTitle().cover,
-                                        true,
-                                        true,
-                                        0,
-                                        R.drawable.ic_launcher_full
-                            );
+                            {
+
+                            }
                         }
                         updatePlayerStatus();
                     }
