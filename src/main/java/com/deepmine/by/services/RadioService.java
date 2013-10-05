@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.app.Notification;
@@ -15,10 +14,10 @@ import android.content.Context;
 
 import com.deepmine.by.MainActivity;
 import com.deepmine.by.R;
+import com.deepmine.by.components.TimerTaskPlus;
 import com.deepmine.by.helpers.Constants;
 
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by zyr3x on 01.10.13.
@@ -36,7 +35,6 @@ public class RadioService extends Service implements Constants{
     private static NotificationManager mNotificationManager = null;
     private static MediaTask _mediaTask = null;
     private static MediaPlayer _mediaPlayer = null;
-    private final Handler _handler = new Handler();
 
     @Override
     public void onCreate() {
@@ -76,15 +74,14 @@ public class RadioService extends Service implements Constants{
     protected void updateTitle()
     {
         _timer = new Timer();
-        _timer.scheduleAtFixedRate(new TimerTask() {
+        _timer.scheduleAtFixedRate(new TimerTaskPlus() {
+
             @Override
             public void run() {
-                _handler.post(new Runnable() {
+                handler.post(new Runnable() {
                     public void run() {
-                        if(_isStartService)
-                        {
-                            if(!_lastTitle.equals(DataService.getDataTitle().title))
-                            {
+                        if (_isStartService) {
+                            if (!_lastTitle.equals(DataService.getDataTitle().title)) {
                                 _lastTitle = DataService.getDataTitle().title;
 
                                 updateNotification(

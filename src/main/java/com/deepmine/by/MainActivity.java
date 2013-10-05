@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Build;
 import android.app.Activity;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,8 +25,8 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.util.Timer;
-import java.util.TimerTask;
 
+import com.deepmine.by.components.TimerTaskPlus;
 import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.adapters.ItemImageBinder;
 import com.deepmine.by.helpers.ImageThreadLoader;
@@ -51,7 +50,6 @@ public class MainActivity extends Activity implements Constants {
     private Intent _dataService;
     private String _lastCover = "";
     private AQuery _aQuery = new AQuery(this);
-    private final Handler _handler = new Handler();
     private ImageThreadLoader imageThreadLoader = new ImageThreadLoader();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,36 +108,33 @@ public class MainActivity extends Activity implements Constants {
 
     protected void updateTitle()
     {
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                _handler.post(new Runnable() {
-                    public void run() {
-                        if(!DataService.getDataTitle().title.equals(""))
-                        {
+         new Timer().scheduleAtFixedRate(new TimerTaskPlus() {
+             @Override
+             public void run() {
+                 handler.post(new Runnable() {
+                     public void run() {
+                         if (!DataService.getDataTitle().title.equals("")) {
 
-                            mTrackArtist.setText(DataService.getDataTitle().artist);
-                            mTrack.setText(DataService.getDataTitle().track);
-                            if(!_lastCover.equals(DataService.getDataTitle().cover))
-                            {
-                                try {
-                                    imageThreadLoader.loadImage(DataService.getDataTitle().cover, new ImageThreadLoader.ImageLoadedListener() {
-                                        @Override
-                                        public void imageLoaded(Bitmap imageBitmap) {
-                                            mCover.setImageBitmap(imageBitmap);
-                                        }
-                                    });
-                                } catch (MalformedURLException e) {
-                                    Log.d(TAG,"Error image load:"+e.getMessage());
-                                }
-                            }
-                        }
-                        updatePlayerStatus();
-                    }
-                });
-            }
-        },1000,1000);
+                             mTrackArtist.setText(DataService.getDataTitle().artist);
+                             mTrack.setText(DataService.getDataTitle().track);
+                             if (!_lastCover.equals(DataService.getDataTitle().cover)) {
+                                 try {
+                                     imageThreadLoader.loadImage(DataService.getDataTitle().cover, new ImageThreadLoader.ImageLoadedListener() {
+                                         @Override
+                                         public void imageLoaded(Bitmap imageBitmap) {
+                                             mCover.setImageBitmap(imageBitmap);
+                                         }
+                                     });
+                                 } catch (MalformedURLException e) {
+                                     Log.d(TAG, "Error image load:" + e.getMessage());
+                                 }
+                             }
+                         }
+                         updatePlayerStatus();
+                     }
+                 });
+             }
+         }, 1000, 1000);
     }
 
     public void getEvents()

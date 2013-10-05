@@ -7,13 +7,12 @@ import android.os.IBinder;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
+import com.deepmine.by.components.TimerTaskPlus;
 import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.helpers.GSONTransformer;
 import com.deepmine.by.models.DataTitle;
 
-
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by zyr3x on 04.10.13.
@@ -24,7 +23,6 @@ public class DataService extends Service implements Constants {
     private static Timer _timer = new Timer();
     private AQuery _aQuery = new AQuery(this);
     private static DataTitle _dataTitle = new DataTitle();
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -71,21 +69,27 @@ public class DataService extends Service implements Constants {
     }
     protected void getData()
     {
-        _timer = new Timer();
-        class UpdateTask extends TimerTask {
 
+        _timer = new Timer();
+        _timer.scheduleAtFixedRate(new TimerTaskPlus() {
+            @Override
             public void run() {
-                _aQuery.transformer(new GSONTransformer()).ajax(RADIO_DATA_URL, DataTitle.class, new AjaxCallback<DataTitle>(){
-                    public void callback(String url, DataTitle dataTitle, AjaxStatus status) {
-                            _dataTitle = dataTitle;
-                            _dataTitle.cover = RADIO_COVER_URL+_dataTitle.title+".jpg";
+                handler.post(new Runnable() {
+                    public void run() {
+                        _aQuery.transformer(new GSONTransformer())
+                                .ajax(
+                                        RADIO_DATA_URL,
+                                        DataTitle.class,
+                                        new AjaxCallback<DataTitle>() {
+                                            public void callback(String url, DataTitle dataTitle, AjaxStatus status) {
+                                                _dataTitle = dataTitle;
+                                            }
+                                        }
+                                );
                     }
                 });
             }
-        }
-
-        TimerTask updateTask = new UpdateTask();
-        _timer.scheduleAtFixedRate(updateTask, 0, 5000);
+        },1000,5000);
     }
 
 }
