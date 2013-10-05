@@ -2,7 +2,7 @@ package com.deepmine.by;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Typeface;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Build;
@@ -24,11 +24,13 @@ import com.androidquery.callback.AjaxStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.MalformedURLException;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.adapters.ItemImageBinder;
+import com.deepmine.by.helpers.ImageThreadLoader;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.models.Blocks;
 import com.deepmine.by.services.DataService;
@@ -43,12 +45,14 @@ public class MainActivity extends Activity implements Constants {
     private ListView mListView;
     public static TextView mTrackArtist;
     public static TextView mTrack;
+    public static ImageView mCover;
     private ProgressDialog loadingDialog = null;
     private Intent _radioService;
+    private Intent _dataService;
     private String _lastCover = "";
     private AQuery _aQuery = new AQuery(this);
     private final Handler _handler = new Handler();
-
+    private ImageThreadLoader imageThreadLoader = new ImageThreadLoader();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +66,11 @@ public class MainActivity extends Activity implements Constants {
         EasyTracker.getInstance().activityStart(this); // Add this method.
 
         startDataService();
+
         mTrackArtist =  (TextView) findViewById(R.id.artist);
         mTrack =  (TextView) findViewById(R.id.track);
         mPlayBtn = (ImageView) findViewById(R.id.playBtn);
+        mCover = (ImageView) findViewById(R.id.trackCover);
         mListView = (ListView) findViewById(R.id.listEvents);
 
         _radioService = new Intent(this, RadioService.class);
@@ -87,16 +93,19 @@ public class MainActivity extends Activity implements Constants {
 
     @Override
     public void onDestroy() {
-
         RadioService.stop();
         stopService(_radioService);
+        stopService(_dataService);
         super.onDestroy();
     }
 
     protected void startDataService()
     {
        if(!DataService.status())
-           startService(new Intent(getApplicationContext(),DataService.class));
+       {
+           _dataService = new Intent(getApplicationContext(),DataService.class);
+           startService(_dataService);
+       }
     }
 
     protected void updateTitle()
@@ -114,7 +123,16 @@ public class MainActivity extends Activity implements Constants {
                             mTrack.setText(DataService.getDataTitle().track);
                             if(!_lastCover.equals(DataService.getDataTitle().cover))
                             {
-
+                                try {
+                                    imageThreadLoader.loadImage(DataService.getDataTitle().cover, new ImageThreadLoader.ImageLoadedListener() {
+                                        @Override
+                                        public void imageLoaded(Bitmap imageBitmap) {
+                                            mCover.setImageBitmap(imageBitmap);
+                                        }
+                                    });
+                                } catch (MalformedURLException e) {
+                                    Log.d(TAG,"Error image load:"+e.getMessage());
+                                }
                             }
                         }
                         updatePlayerStatus();
@@ -228,7 +246,5 @@ public class MainActivity extends Activity implements Constants {
         }
 
     }
-
-
 
 }

@@ -1,24 +1,28 @@
 package com.deepmine.by.adapters;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import com.androidquery.AQuery;
+import com.deepmine.by.helpers.Constants;
+import com.deepmine.by.helpers.ImageThreadLoader;
 
-public class ImageAdapter extends BaseAdapter {
+public class ImageAdapter extends BaseAdapter implements Constants {
     private Context mContext;
-    private AQuery aq;
+    ImageThreadLoader imageThreadLoader = new ImageThreadLoader();
     
     private ArrayList<String> list = new ArrayList<String>();
     public ImageAdapter(Context c,ArrayList<String> arrayList) {
         mContext = c;
-    	aq = new AQuery(mContext);
     	list = arrayList;
     }
     
@@ -42,7 +46,7 @@ public class ImageAdapter extends BaseAdapter {
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
+        final ImageView imageView;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
             imageView.setPadding(10, 10, 10, 10);
@@ -51,11 +55,18 @@ public class ImageAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
-    	aq.id(imageView).image(list.get(position).toString(),false, true);
+        try {
+            imageThreadLoader.loadImage(list.get(position).toString(),new ImageThreadLoader.ImageLoadedListener() {
+                @Override
+                public void imageLoaded(Bitmap imageBitmap) {
+                    imageView.setImageBitmap(imageBitmap);
+                }
+            });
+        } catch (MalformedURLException e) {
+            Log.d(MAIN_TAG, "Error image load:" + e.getMessage());
+        }
   
         return imageView;
     }
 
-    // references to our images
-  
 }
