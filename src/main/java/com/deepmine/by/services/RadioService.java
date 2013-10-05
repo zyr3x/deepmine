@@ -80,12 +80,10 @@ public class RadioService extends Service implements Constants{
                 handler.post(new Runnable() {
                     public void run() {
                         if (_isStartService) {
-                            if (!DataService.getLastTitle().equals(DataService.getDataTitle().title)) {
                                 updateNotification(
                                         DataService.getDataTitle().artist,
                                         DataService.getDataTitle().track
                                 );
-                            }
                         }
                     }
                 });
