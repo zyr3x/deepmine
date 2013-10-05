@@ -155,8 +155,7 @@ public class MainActivity extends Activity implements Constants {
                                 ResourceHelper.getInstance().getIntArray(R.array.menu_row_element_ids)
                         );
 
-                        simpleAdapter.setViewBinder(new ItemImageBinder().init(
-                                getApplicationContext(), R.drawable.ic_launcher));
+                        simpleAdapter.setViewBinder(new ItemImageBinder());
 
                         mListView.setAdapter(simpleAdapter);
                         mListView.setDividerHeight(0);

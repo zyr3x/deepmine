@@ -1,10 +1,8 @@
 package com.deepmine.by.adapters;
 
-import com.androidquery.AQuery;
 import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.helpers.ImageThreadLoader;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.View;
@@ -16,16 +14,7 @@ import java.net.MalformedURLException;
 
 public class ItemImageBinder implements SimpleAdapter.ViewBinder, Constants
 {
-    private static int RES_ID;
-    private static Context CONTEXT;
     ImageThreadLoader imageThreadLoader = new ImageThreadLoader();
-    public ItemImageBinder init(Context context,int res_id )
-    {
-    	RES_ID = res_id;
-    	CONTEXT = context;
-    	return this;
-    }
-    
     @Override
     public boolean setViewValue(final View view, Object data, String textRepresentation) {
         if (view instanceof ImageView) {
