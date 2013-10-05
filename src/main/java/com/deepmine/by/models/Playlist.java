@@ -13,12 +13,15 @@ public class Playlist {
     {
         ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
         if(playlist!=null)
-        for (int i = 0; i < playlist.size(); i++) {
-            HashMap<String, Object> temp = new HashMap<String, Object>();
-            temp.put("artist", playlist.get(i).artist);
-            temp.put("track", playlist.get(i).track);
-            temp.put("cover", playlist.get(i).cover);
-            list.add(temp);
+        for (DataTitle item : playlist ) {
+            if(item!=null)
+            {
+                HashMap<String, Object> temp = new HashMap<String, Object>();
+                temp.put("artist", item.artist);
+                temp.put("track", item.track);
+                temp.put("cover", item.cover);
+                list.add(temp);
+            }
         }
         return list;
     }

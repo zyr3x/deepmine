@@ -4,14 +4,12 @@
         <item>bg</item>
         <item>title</item>
         <item>url</item>
-        <item>ess_id</item>
     </string-array>
 
     <integer-array name="menu_row_element_ids">
         <item>@+id/imageView</item>
         <item>@+id/textView</item>
         <item>@+id/link</item>
-        <item>@+id/ess_id</item>
     </integer-array>
 
     <string-array name="playlist_names">

@@ -4,7 +4,8 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:padding="2dp"
-    android:id="@+id/rowMenu">
+    android:id="@+id/rowMenu"
+    android:background="@drawable/click">
 
     <ImageView
         android:layout_width="match_parent"
@@ -36,12 +37,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/link"
-        android:visibility="gone" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ess_id"
         android:visibility="gone" />
 
     <ImageView

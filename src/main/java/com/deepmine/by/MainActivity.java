@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Build;
 import android.app.Activity;
 import android.util.Log;
 import android.view.View;
@@ -20,15 +19,13 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.net.MalformedURLException;
 import java.util.Timer;
 
 import com.deepmine.by.components.TimerTaskPlus;
 import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.adapters.ItemImageBinder;
+import com.deepmine.by.helpers.GSONTransformer;
 import com.deepmine.by.helpers.ImageThreadLoader;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.models.Blocks;
@@ -135,111 +132,95 @@ public class MainActivity extends Activity implements Constants {
 
     public void getEvents()
     {
-        _aQuery.ajax(EVENT_URL, JSONObject.class, new AjaxCallback<JSONObject>() {
+               _aQuery.transformer(new GSONTransformer())
+                                                        .ajax(
+                                                                EVENT_URL,
+                                                                Blocks.class,
+                                                                new AjaxCallback<Blocks>() {
+                                                                    public void callback(String url, Blocks blocks, AjaxStatus status) {
 
-            @Override
-            public void callback(String url, JSONObject json, AjaxStatus status) {
-                if (json != null) {
-                    try
-                    {
-                        Blocks blocks = new Blocks(json.getJSONArray("data"));
+                                                                        SimpleAdapter simpleAdapter = new SimpleAdapter
+                                                                                (getApplicationContext(),
+                                                                                blocks.getList(),
+                                                                                R.layout.menu_row,
+                                                                                getResources().getStringArray(R.array.menu_row_element_names),
+                                                                                ResourceHelper.getInstance().getIntArray(R.array.menu_row_element_ids)
+                                                                        );
 
-                        SimpleAdapter simpleAdapter = new SimpleAdapter( getApplicationContext(),
-                                blocks.getList(),
-                                R.layout.menu_row,
-                                getResources().getStringArray(R.array.menu_row_element_names),
-                                ResourceHelper.getInstance().getIntArray(R.array.menu_row_element_ids)
-                        );
+                                                                        simpleAdapter.setViewBinder(new ItemImageBinder());
 
-                        simpleAdapter.setViewBinder(new ItemImageBinder());
-
-                        mListView.setAdapter(simpleAdapter);
-                        mListView.setDividerHeight(0);
-                        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view,
-                                                int i, long l) {
-                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(((TextView) view
-                                    .findViewById(R.id.link)).getText().toString()));
-                            startActivity(browserIntent);
-
-
-                        }
-                    });
-                        simpleAdapter.notifyDataSetChanged();
-                    }
-                    catch (JSONException e)
-                    {
-                        Log.d(TAG, "Exception parse");
-                    }
+                                                                        mListView.setAdapter(simpleAdapter);
+                                                                        mListView.setDividerHeight(0);
+                                                                        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                                                        @Override
+                                                                        public void onItemClick(AdapterView<?> adapterView, View view,
+                                                                                                int i, long l) {
+                                                                                                Intent browserIntent = new Intent(
+                                                                                                        Intent.ACTION_VIEW, Uri.parse(((TextView) view
+                                                                                                        .findViewById(R.id.link)).getText().toString()));
+                                                                                                startActivity(browserIntent);
 
 
+                                                                        }
+                                                                });
+                                                                simpleAdapter.notifyDataSetChanged();
 
-                }
-            }
-        });
 
-    }
+                                                        }
+                                                    }
+                                                );
 
-    public void onPlay(View view)
-    {
-        if(RadioService.isPlaying())
-            stopMedia();
-        else
-            playMedia();
-    }
+                                            }
 
-    public void onClickTitle(View view)
-    {
-        startActivity(new Intent(this,NextActivity.class));
-    }
+                                            public void onPlay(View view) {
+                                                if (RadioService.isPlaying())
+                                                    stopMedia();
+                                                else
+                                                    playMedia();
+                                            }
 
-    private void playMedia()
-    {
-        showLoading();
-        startService(_radioService);
-    }
+                                            public void onClickTitle(View view) {
+                                                startActivity(new Intent(this, NextActivity.class));
+                                            }
 
-    private void showLoading()
-    {
-        loadingDialog = new ProgressDialog(this);
-        loadingDialog.setMessage(getText(R.string.connection));
-        loadingDialog.setCancelable(false);
-        loadingDialog.setCanceledOnTouchOutside(false);
-        loadingDialog.show();
-    }
+                                            private void playMedia() {
+                                                showLoading();
+                                                startService(_radioService);
+                                            }
 
-    private void stopMedia()
-    {
-        RadioService.stop();
-        stopService(_radioService);
-        updatePlayerStatus();
-    }
+                                            private void showLoading() {
+                                                loadingDialog = new ProgressDialog(this);
+                                                loadingDialog.setMessage(getText(R.string.connection));
+                                                loadingDialog.setCancelable(false);
+                                                loadingDialog.setCanceledOnTouchOutside(false);
+                                                loadingDialog.show();
+                                            }
 
-    private void updatePlayerStatus()
-    {
-        if(RadioService.isPlaying())
-        {
-            if(loadingDialog!=null && loadingDialog.isShowing())
-                loadingDialog.dismiss();
+                                            private void stopMedia() {
+                                                RadioService.stop();
+                                                stopService(_radioService);
+                                                updatePlayerStatus();
+                                            }
 
-            mPlayBtn.setImageResource(R.drawable.ic_media_pause);
-        }
-        else
-        {
-            mPlayBtn.setImageResource(R.drawable.ic_media_play);
-        }
+                                            private void updatePlayerStatus() {
+                                                if (RadioService.isPlaying()) {
+                                                    if (loadingDialog != null && loadingDialog.isShowing())
+                                                        loadingDialog.dismiss();
 
-        if(RadioService.isErrors())
-        {
-            if(loadingDialog!=null && loadingDialog.isShowing())
-                loadingDialog.dismiss();
+                                                    mPlayBtn.setImageResource(R.drawable.ic_media_pause);
+                                                } else {
+                                                    mPlayBtn.setImageResource(R.drawable.ic_media_play);
+                                                }
 
-            Toast.makeText(this,R.string.error_connection, Toast.LENGTH_SHORT).show();
-            RadioService.cleanErrors();
-            stopMedia();
-        }
+                                                if (RadioService.isErrors()) {
+                                                    if (loadingDialog != null && loadingDialog.isShowing())
+                                                        loadingDialog.dismiss();
 
-    }
+                                                    Toast.makeText(this, R.string.error_connection, Toast.LENGTH_SHORT).show();
+                                                    RadioService.cleanErrors();
+                                                    stopMedia();
+                                                }
 
-}
+                                            }
+
+                                        }
