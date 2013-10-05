@@ -44,7 +44,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/artist"
-        android:textColor="#fff"
         android:layout_gravity="center"
         android:textSize="24dp"
         android:textColor="#99cc00"
