@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
     xmlns:custom="http://schemas.android.com/apk/res/com.deepmine.by"
     android:layout_width="fill_parent"
     android:layout_height="65dp"
@@ -44,8 +43,7 @@
             android:layout_gravity="left|center_vertical"
             android:textColor="#fff"
             android:layout_marginLeft="5dp"
-            custom:customFont="fonts/engravers-gothic-bt.ttf"
-            />
+            custom:customFont="fonts/engravers-gothic-bt.ttf" />
 
     </LinearLayout>
 

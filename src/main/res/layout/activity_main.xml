@@ -7,18 +7,16 @@
     android:orientation="vertical">
 
     <RelativeLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="175dp"
-                  >
+        android:layout_width="match_parent"
+        android:layout_height="175dp">
 
         <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:src="@drawable/header"
-               android:scaleType="centerCrop"
-                />
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:src="@drawable/header"
+            android:scaleType="centerCrop" />
 
-    <ImageView
+        <ImageView
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:id="@+id/trackCover"
@@ -26,9 +24,9 @@
             android:src="@drawable/ic_launcher_full"
             android:layout_marginLeft="23dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="10dp" />
 
-    <LinearLayout
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_alignParentTop="true"
@@ -37,24 +35,23 @@
             android:background="@drawable/click"
             android:onClick="onClickTitle"
             android:layout_toRightOf="@+id/trackCover"
-        android:layout_above="@+id/linearLayout2"
-        android:layout_toLeftOf="@+id/linearLayout">
+            android:layout_above="@+id/linearLayout2"
+            android:layout_toLeftOf="@+id/linearLayout">
 
-    <com.deepmine.by.components.TextViewPlus
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/artist"
-        android:layout_gravity="center"
-        android:textSize="24dp"
-        android:textColor="@color/title_color"
-        android:singleLine="false"
-        android:text="@string/playername"
-        custom:customFont="fonts/engravers-gothic-bt.ttf"
-        android:layout_marginTop="8dp"
-        android:onClick="onClickTitle"
-        />
+            <com.deepmine.by.components.TextViewPlus
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/artist"
+                android:layout_gravity="center"
+                android:textSize="24dp"
+                android:textColor="@color/title_color"
+                android:singleLine="false"
+                android:text="@string/playername"
+                custom:customFont="fonts/engravers-gothic-bt.ttf"
+                android:layout_marginTop="8dp"
+                android:onClick="onClickTitle" />
 
-    <com.deepmine.by.components.TextViewPlus
+            <com.deepmine.by.components.TextViewPlus
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/track"
@@ -65,59 +62,56 @@
                 android:textStyle="normal"
                 android:singleLine="true"
                 custom:customFont="fonts/engravers-gothic-bt.ttf"
-                android:onClick="onClickTitle"
-        />
-    </LinearLayout>
-        <LinearLayout
-                android:layout_width="80dp"
-                android:layout_height="60dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:id="@+id/linearLayout"
-                android:orientation="vertical"
-                android:background="@drawable/click"
-                android:onClick="onPlay"
-                >
-
-            <ImageView
-                    android:id="@+id/playBtn"
-                    android:layout_width="70dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_media_play"
-                    android:focusableInTouchMode="true"
-                    android:adjustViewBounds="false"/>
+                android:onClick="onClickTitle" />
         </LinearLayout>
 
         <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="45dp"
-                android:background="@drawable/header_bg"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:id="@+id/linearLayout"
+            android:orientation="vertical"
+            android:background="@drawable/click"
+            android:onClick="onPlay">
+
+            <ImageView
+                android:id="@+id/playBtn"
+                android:layout_width="70dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_weight="1"
+                android:src="@drawable/ic_media_play"
+                android:focusableInTouchMode="true"
+                android:adjustViewBounds="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/header_bg"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
             android:id="@+id/linearLayout2">
 
             <com.deepmine.by.components.TextViewPlus
-                    android:layout_width="516dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="@string/title_events"
-                    android:id="@+id/headerTitle"
-                    android:layout_gravity="left|center_vertical"
-                    android:textColor="@color/white"
-                    android:layout_marginLeft="15dp"
-                    custom:customFont="fonts/7124455.ttf"
-                    >
-            </com.deepmine.by.components.TextViewPlus>
+                android:layout_width="516dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/title_events"
+                android:id="@+id/headerTitle"
+                android:layout_gravity="left|center_vertical"
+                android:textColor="@color/white"
+                android:layout_marginLeft="15dp"
+                custom:customFont="fonts/7124455.ttf"></com.deepmine.by.components.TextViewPlus>
         </LinearLayout>
 
     </RelativeLayout>
 
     <ListView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/listEvents"
-            android:background="#000000"/>
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listEvents"
+        android:background="#000000" />
 </LinearLayout>
