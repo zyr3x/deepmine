@@ -46,7 +46,7 @@
         android:id="@+id/artist"
         android:layout_gravity="center"
         android:textSize="24dp"
-        android:textColor="#99cc00"
+        android:textColor="@color/title_color"
         android:singleLine="false"
         android:text="@string/playername"
         custom:customFont="fonts/engravers-gothic-bt.ttf"
