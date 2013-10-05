@@ -56,10 +56,6 @@ public class MainActivity extends Activity implements Constants {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            getActionBar().hide();
-        }
-
         ResourceHelper.getInstance().init(this);
         EasyTracker.getInstance().activityStart(this); // Add this method.
 
