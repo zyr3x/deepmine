@@ -11,7 +11,9 @@ import com.deepmine.by.components.TimerTaskPlus;
 import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.helpers.GSONTransformer;
 import com.deepmine.by.models.DataTitle;
+import com.deepmine.by.models.Playlist;
 
+import java.util.ArrayList;
 import java.util.Timer;
 
 /**
@@ -23,6 +25,8 @@ public class DataService extends Service implements Constants {
     private static Timer _timer = new Timer();
     private AQuery _aQuery = new AQuery(this);
     private static DataTitle _dataTitle = new DataTitle();
+    private static Playlist _playlist =new  Playlist();
+    private static String _lastTitle = "";
     @Override
     public void onCreate() {
         super.onCreate();
@@ -67,6 +71,17 @@ public class DataService extends Service implements Constants {
         return _dataTitle;
 
     }
+
+    public  static String getLastTitle()
+    {
+        return _lastTitle;
+    }
+
+    public static Playlist getPlaylist()
+    {
+        return _playlist;
+    }
+
     protected void getData()
     {
 
@@ -83,9 +98,24 @@ public class DataService extends Service implements Constants {
                                         new AjaxCallback<DataTitle>() {
                                             public void callback(String url, DataTitle dataTitle, AjaxStatus status) {
                                                 _dataTitle = dataTitle;
+
                                             }
                                         }
                                 );
+                        if(!_lastTitle.equals(_dataTitle.title))
+                        {
+                            _lastTitle = _dataTitle.title;
+                            _aQuery.transformer(new GSONTransformer())
+                                    .ajax(
+                                            RADIO_LIST_URL,
+                                            Playlist.class,
+                                            new AjaxCallback<Playlist>() {
+                                                public void callback(String url, Playlist playlist, AjaxStatus status) {
+                                                    _playlist = playlist;
+                                                }
+                                            }
+                                    );
+                        }
                     }
                 });
             }

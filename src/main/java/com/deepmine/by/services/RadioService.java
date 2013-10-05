@@ -27,7 +27,6 @@ public class RadioService extends Service implements Constants{
     private static String TAG = MAIN_TAG+":RadioService";
 
     private static final int NOTIFICATION_ID = 1;
-    private static String _lastTitle = "";
     private static boolean _isStartService = false;
     private static boolean _isError = false;
 
@@ -81,9 +80,7 @@ public class RadioService extends Service implements Constants{
                 handler.post(new Runnable() {
                     public void run() {
                         if (_isStartService) {
-                            if (!_lastTitle.equals(DataService.getDataTitle().title)) {
-                                _lastTitle = DataService.getDataTitle().title;
-
+                            if (!DataService.getLastTitle().equals(DataService.getDataTitle().title)) {
                                 updateNotification(
                                         DataService.getDataTitle().artist,
                                         DataService.getDataTitle().track
@@ -111,7 +108,6 @@ public class RadioService extends Service implements Constants{
     public static void stop()
     {
         _isStartService = false;
-        _lastTitle = "";
 
         if(_mediaTask !=null)
             _mediaTask.cancel(false);

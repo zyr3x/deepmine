@@ -13,4 +13,16 @@
         <item>@+id/link</item>
         <item>@+id/ess_id</item>
     </integer-array>
+
+    <string-array name="playlist_names">
+        <item>cover</item>
+        <item>artist</item>
+        <item>track</item>
+    </string-array>
+
+    <integer-array name="playlist_ids">
+        <item>@+id/coverImage</item>
+        <item>@+id/trackArtist</item>
+        <item>@+id/trackTitle</item>
+    </integer-array>
 </resources>

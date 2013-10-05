@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:custom="http://schemas.android.com/apk/res/com.deepmine.by"
+    android:layout_width="fill_parent"
+    android:layout_height="65dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#000"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:id="@+id/coverImage"
+        android:layout_gravity="center_horizontal|top"
+        android:background="@drawable/ic_launcher_full"
+        android:layout_margin="5dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal|top">
+
+        <com.deepmine.by.components.TextViewPlus
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/playername"
+            android:id="@+id/trackArtist"
+            android:layout_gravity="left|center_vertical"
+            android:textColor="#99cc00"
+            android:layout_marginLeft="5dp"
+            custom:customFont="fonts/engravers-gothic-bt.ttf"
+            android:layout_marginTop="5dp" />
+
+
+        <com.deepmine.by.components.TextViewPlus
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/introrext"
+            android:id="@+id/trackTitle"
+            android:layout_gravity="left|center_vertical"
+            android:textColor="#fff"
+            android:layout_marginLeft="5dp"
+            custom:customFont="fonts/engravers-gothic-bt.ttf"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/playername"
+        android:id="@+id/textView"
+        android:layout_gravity="center"
+        android:textColor="#99cc00"
+        android:layout_marginLeft="5dp" />
+</LinearLayout>

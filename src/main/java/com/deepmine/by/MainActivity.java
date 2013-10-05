@@ -189,6 +189,11 @@ public class MainActivity extends Activity implements Constants {
             playMedia();
     }
 
+    public void onClickTitle(View view)
+    {
+        startActivity(new Intent(this,NextActivity.class));
+    }
+
     private void playMedia()
     {
         showLoading();
