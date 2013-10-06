@@ -88,6 +88,7 @@ public class MainActivity extends Activity implements Constants {
     @Override
     public void onDestroy() {
         RadioService.stop();
+        MediaService.stop();
         stopService(_radioService);
         stopService(_dataService);
         stopService(_mediaService);
