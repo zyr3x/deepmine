@@ -124,7 +124,7 @@ public class MainActivity extends Activity implements Constants {
                                  }
                              }
                          }
-                         else
+                         else if(MediaService.isPlaying() )
                          {
                              mTrackArtist.setText(MediaService.getDataTitle().artist);
                              mTrack.setText(MediaService.getDataTitle().track);
