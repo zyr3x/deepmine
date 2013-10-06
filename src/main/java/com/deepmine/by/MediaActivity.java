@@ -11,13 +11,13 @@ import com.deepmine.by.R;
 import com.deepmine.by.adapters.ItemImageBinder;
 import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.helpers.ResourceHelper;
+import com.deepmine.by.models.DataTitle;
 import com.deepmine.by.services.DataService;
 import com.deepmine.by.services.MediaService;
 import com.google.analytics.tracking.android.EasyTracker;
 
 public class MediaActivity extends Activity implements Constants {
 
-    private static MediaService _mediaService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +41,9 @@ public class MediaActivity extends Activity implements Constants {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 CharSequence title = ((TextView)view.findViewById(R.id.title)).getText();
-
+                DataTitle dataTitle = new DataTitle();
+                dataTitle.title = title.toString();
+                MediaService.setDataTitle(dataTitle);
             }
         });
         simpleAdapter.notifyDataSetChanged();
