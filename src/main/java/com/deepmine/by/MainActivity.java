@@ -30,6 +30,7 @@ import com.deepmine.by.helpers.ImageThreadLoader;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.models.Blocks;
 import com.deepmine.by.services.DataService;
+import com.deepmine.by.services.MediaService;
 import com.deepmine.by.services.RadioService;
 import com.google.analytics.tracking.android.EasyTracker;
 
@@ -106,13 +107,31 @@ public class MainActivity extends Activity implements Constants {
              public void run() {
                  handler.post(new Runnable() {
                      public void run() {
-                         if (!DataService.getDataTitle().title.equals("")) {
+                         if (!DataService.getDataTitle().title.equals("") && !MediaService.isPlaying()) {
 
                              mTrackArtist.setText(DataService.getDataTitle().artist);
                              mTrack.setText(DataService.getDataTitle().track);
                              if (!_lastCover.equals(DataService.getDataTitle().cover)) {
                                  try {
                                      imageThreadLoader.loadImage(DataService.getDataTitle().cover, new ImageThreadLoader.ImageLoadedListener() {
+                                         @Override
+                                         public void imageLoaded(Bitmap imageBitmap) {
+                                             mCover.setImageBitmap(imageBitmap);
+                                         }
+                                     });
+                                 } catch (MalformedURLException e) {
+                                     Log.d(TAG, "Error image load:" + e.getMessage());
+                                 }
+                             }
+                         }
+                         else
+                         {
+                             mTrackArtist.setText(MediaService.getDataTitle().artist);
+                             mTrack.setText(MediaService.getDataTitle().track);
+                             if (!_lastCover.equals(MediaService.getDataTitle().cover)) {
+                                 try {
+                                     _lastCover= MediaService.getDataTitle().cover;
+                                     imageThreadLoader.loadImage(MediaService.getDataTitle().cover, new ImageThreadLoader.ImageLoadedListener() {
                                          @Override
                                          public void imageLoaded(Bitmap imageBitmap) {
                                              mCover.setImageBitmap(imageBitmap);

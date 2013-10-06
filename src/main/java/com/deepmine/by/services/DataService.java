@@ -26,6 +26,7 @@ public class DataService extends Service implements Constants {
     private AQuery _aQuery = new AQuery(this);
     private static DataTitle _dataTitle = new DataTitle();
     private static Playlist _playlist =new  Playlist();
+    private static Playlist _mediaPlaylist =new  Playlist();
     private static String _lastTitle = "";
     @Override
     public void onCreate() {
@@ -38,6 +39,7 @@ public class DataService extends Service implements Constants {
         {
             _status = true;
             getData();
+            getList();
         }
         return START_STICKY;
     }
@@ -121,5 +123,22 @@ public class DataService extends Service implements Constants {
             }
         },1000,5000);
     }
+
+    protected void getList()
+    {
+                        _aQuery.transformer(new GSONTransformer())
+                                .ajax(
+                                        MEDIA_LIST_URL,
+                                        Playlist.class,
+                                        new AjaxCallback<Playlist>() {
+                                            public void callback(String url, Playlist playlist, AjaxStatus status) {
+                                                _mediaPlaylist = playlist;
+
+                                            }
+                                        }
+                                );
+    }
+
+
 
 }

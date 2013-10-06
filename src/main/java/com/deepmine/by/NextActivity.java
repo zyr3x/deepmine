@@ -1,6 +1,8 @@
 package com.deepmine.by;
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -32,6 +34,12 @@ public class NextActivity extends Activity implements Constants {
         simpleAdapter.setViewBinder(new ItemImageBinder());
         listView.setAdapter(simpleAdapter);
         listView.setDividerHeight(0);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+        });
         simpleAdapter.notifyDataSetChanged();
 
     }
