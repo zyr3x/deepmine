@@ -14,6 +14,7 @@ import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.models.DataTitle;
 import com.deepmine.by.services.DataService;
 import com.deepmine.by.services.MediaService;
+import com.deepmine.by.services.RadioService;
 import com.google.analytics.tracking.android.EasyTracker;
 
 public class MediaActivity extends Activity implements Constants {
@@ -22,7 +23,6 @@ public class MediaActivity extends Activity implements Constants {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist);
-
         ResourceHelper.getInstance().init(this);
         EasyTracker.getInstance().activityStart(this); // Add this method.
         ListView listView = (ListView) findViewById(R.id.listNext);

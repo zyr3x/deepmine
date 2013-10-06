@@ -54,6 +54,7 @@ public class MediaService extends Service implements Constants{
 
     public static void play()
     {
+        RadioService.stop();
         if(_dataTitle!=null)
             _mediaTask.execute();
         else
