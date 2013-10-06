@@ -41,9 +41,14 @@ public class NextActivity extends Activity implements Constants {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 CharSequence title = ((TextView)view.findViewById(R.id.title)).getText();
+                CharSequence trackArtist = ((TextView)view.findViewById(R.id.trackArtist)).getText();
+                CharSequence trackTitle = ((TextView)view.findViewById(R.id.trackTitle)).getText();
                 DataTitle dataTitle = new DataTitle();
                 dataTitle.title = title.toString();
+                dataTitle.artist = trackArtist.toString();
+                dataTitle.track = trackTitle.toString();
                 MediaService.setDataTitle(dataTitle);
+                MediaService.play();
             }
         });
         simpleAdapter.notifyDataSetChanged();

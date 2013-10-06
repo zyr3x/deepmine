@@ -64,6 +64,7 @@ public class MediaService extends Service implements Constants{
     public static void setDataTitle(DataTitle dataTitle)
     {
         _dataTitle =dataTitle;
+        Log.d(TAG,dataTitle.title);
     }
 
     public static DataTitle getDataTitle()

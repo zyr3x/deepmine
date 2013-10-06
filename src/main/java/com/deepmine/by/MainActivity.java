@@ -46,6 +46,7 @@ public class MainActivity extends Activity implements Constants {
     private ProgressDialog loadingDialog = null;
     private Intent _radioService;
     private Intent _dataService;
+    private Intent _mediaService;
     private String _lastCover = "";
     private AQuery _aQuery = new AQuery(this);
     private ImageThreadLoader imageThreadLoader = new ImageThreadLoader();
@@ -66,6 +67,7 @@ public class MainActivity extends Activity implements Constants {
         mListView = (ListView) findViewById(R.id.listEvents);
 
         _radioService = new Intent(this, RadioService.class);
+
         updateTitle();
         getEvents();
 
@@ -88,6 +90,7 @@ public class MainActivity extends Activity implements Constants {
         RadioService.stop();
         stopService(_radioService);
         stopService(_dataService);
+        stopService(_mediaService);
         super.onDestroy();
     }
 
@@ -96,7 +99,9 @@ public class MainActivity extends Activity implements Constants {
        if(!DataService.status())
        {
            _dataService = new Intent(getApplicationContext(),DataService.class);
+           _mediaService = new Intent(getApplicationContext(), RadioService.class);
            startService(_dataService);
+           startService(_mediaService);
        }
     }
 
@@ -192,7 +197,7 @@ public class MainActivity extends Activity implements Constants {
                                             }
 
                                             public void onPlay(View view) {
-                                                if (RadioService.isPlaying())
+                                                if (RadioService.isPlaying() || MediaService.isPlaying())
                                                     stopMedia();
                                                 else
                                                     playMedia();
@@ -217,6 +222,7 @@ public class MainActivity extends Activity implements Constants {
 
                                             private void stopMedia() {
                                                 RadioService.stop();
+                                                MediaService.stop();
                                                 stopService(_radioService);
                                                 updatePlayerStatus();
                                             }
