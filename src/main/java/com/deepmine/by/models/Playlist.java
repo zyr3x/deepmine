@@ -20,6 +20,7 @@ public class Playlist {
                 temp.put("artist", item.artist);
                 temp.put("track", item.track);
                 temp.put("cover", item.cover);
+                temp.put("title", item.title);
                 list.add(temp);
             }
         }

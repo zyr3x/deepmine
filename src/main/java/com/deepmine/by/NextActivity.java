@@ -5,11 +5,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import com.deepmine.by.adapters.ItemImageBinder;
 import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.helpers.ResourceHelper;
+import com.deepmine.by.models.DataTitle;
 import com.deepmine.by.services.DataService;
+import com.deepmine.by.services.MediaService;
 import com.google.analytics.tracking.android.EasyTracker;
 
 public class NextActivity extends Activity implements Constants {
@@ -37,7 +40,10 @@ public class NextActivity extends Activity implements Constants {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                CharSequence title = ((TextView)view.findViewById(R.id.title)).getText();
+                DataTitle dataTitle = new DataTitle();
+                dataTitle.title = title.toString();
+                MediaService.setDataTitle(dataTitle);
             }
         });
         simpleAdapter.notifyDataSetChanged();
