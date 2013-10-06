@@ -99,7 +99,7 @@ public class MainActivity extends Activity implements Constants {
        if(!DataService.status())
        {
            _dataService = new Intent(getApplicationContext(),DataService.class);
-           _mediaService = new Intent(getApplicationContext(), RadioService.class);
+           _mediaService = new Intent(getApplicationContext(), MediaService.class);
            startService(_dataService);
            startService(_mediaService);
        }
@@ -133,19 +133,7 @@ public class MainActivity extends Activity implements Constants {
                          {
                              mTrackArtist.setText(MediaService.getDataTitle().artist);
                              mTrack.setText(MediaService.getDataTitle().track);
-                             if (!_lastCover.equals(MediaService.getDataTitle().cover)) {
-                                 try {
-                                     _lastCover= MediaService.getDataTitle().cover;
-                                     imageThreadLoader.loadImage(MediaService.getDataTitle().cover, new ImageThreadLoader.ImageLoadedListener() {
-                                         @Override
-                                         public void imageLoaded(Bitmap imageBitmap) {
-                                             mCover.setImageBitmap(imageBitmap);
-                                         }
-                                     });
-                                 } catch (MalformedURLException e) {
-                                     Log.d(TAG, "Error image load:" + e.getMessage());
-                                 }
-                             }
+                             mCover.setImageResource(R.drawable.ic_launcher_full);
                          }
                          updatePlayerStatus();
                      }
@@ -228,7 +216,7 @@ public class MainActivity extends Activity implements Constants {
                                             }
 
                                             private void updatePlayerStatus() {
-                                                if (RadioService.isPlaying()) {
+                                                if (RadioService.isPlaying() || MediaService.isPlaying()) {
                                                     if (loadingDialog != null && loadingDialog.isShowing())
                                                         loadingDialog.dismiss();
 
@@ -237,12 +225,13 @@ public class MainActivity extends Activity implements Constants {
                                                     mPlayBtn.setImageResource(R.drawable.ic_media_play);
                                                 }
 
-                                                if (RadioService.isErrors()) {
+                                                if (RadioService.isErrors() || MediaService.isErrors()) {
                                                     if (loadingDialog != null && loadingDialog.isShowing())
                                                         loadingDialog.dismiss();
 
                                                     Toast.makeText(this, R.string.error_connection, Toast.LENGTH_SHORT).show();
                                                     RadioService.cleanErrors();
+                                                    MediaService.cleanErrors();
                                                     stopMedia();
                                                 }
 

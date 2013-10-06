@@ -8,4 +8,5 @@
     <string name="title_next">Next on air</string>
     <string name="error_connection">Error connecting to the radio server.</string>
     <string name="connection">Connecting to radio server...</string>
+    <string name="connection_media">Connecting to media server...</string>
 </resources>

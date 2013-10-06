@@ -43,7 +43,7 @@ public class MediaService extends Service implements Constants{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startid) {
-        _mediaTask = new MediaTask();
+        updateTitle();
         return START_STICKY;
     }
 
@@ -55,8 +55,12 @@ public class MediaService extends Service implements Constants{
     public static void play()
     {
         RadioService.stop();
+        stop();
         if(_dataTitle!=null)
+        {
+            _mediaTask = new MediaTask();
             _mediaTask.execute();
+        }
         else
             _isError = true;
     }
@@ -72,15 +76,15 @@ public class MediaService extends Service implements Constants{
         return _dataTitle;
     }
 
-    public void start()
+    public static void start()
     {
         try {
+            String url = MEDIA_TRACK_URL+_dataTitle.title+MEDIA_TRACK_TYPE;
             _mediaPlayer = new MediaPlayer();
-            _mediaPlayer.setDataSource(MEDIA_TRACK_URL+_dataTitle.title+".mp3"+MEDIA_TRACK_TYPE);
+            _mediaPlayer.setDataSource(url);
             _mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             _mediaPlayer.prepare();
             _mediaPlayer.start();
-
             _isStartService = true;
         } catch (Exception e) {
             _isError = true;
@@ -105,6 +109,10 @@ public class MediaService extends Service implements Constants{
                                         _dataTitle.artist,
                                         _dataTitle.track
                                 );
+                        }
+                        else
+                        {
+
                         }
                     }
                 });
@@ -171,7 +179,7 @@ public class MediaService extends Service implements Constants{
         mNotificationManager.notify(NOTIFICATION_ID,notification);
     }
 
-    class MediaTask extends AsyncTask<Object, Void, Boolean> {
+    static class MediaTask extends AsyncTask<Object, Void, Boolean> implements Constants {
 
         protected Boolean doInBackground(Object... arg) {
             start();
@@ -179,8 +187,8 @@ public class MediaService extends Service implements Constants{
         }
 
         protected void onPostExecute(Boolean flag) {
-            if(flag)
-                updateTitle();
+           // if(flag)
+           //     this.updateTitle();
         }
     }
 

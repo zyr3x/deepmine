@@ -1,21 +1,32 @@
 package com.deepmine.by;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.deepmine.by.adapters.ItemImageBinder;
+import com.deepmine.by.components.TimerTaskPlus;
 import com.deepmine.by.helpers.Constants;
+import com.deepmine.by.helpers.ImageThreadLoader;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.models.DataTitle;
 import com.deepmine.by.services.DataService;
 import com.deepmine.by.services.MediaService;
 import com.google.analytics.tracking.android.EasyTracker;
 
+import java.net.MalformedURLException;
+import java.util.Timer;
+
 public class NextActivity extends Activity implements Constants {
+
+    private ProgressDialog loadingDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +60,51 @@ public class NextActivity extends Activity implements Constants {
                 dataTitle.track = trackTitle.toString();
                 MediaService.setDataTitle(dataTitle);
                 MediaService.play();
+                showLoading();
+                checkStatus();
             }
         });
         simpleAdapter.notifyDataSetChanged();
 
     }
+    protected void checkStatus()
+    {
+        new Timer().scheduleAtFixedRate(new TimerTaskPlus() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        updateStatus();
+                    }
+                });
+            }
+        }, 1000, 1000);
+    }
 
+    private void updateStatus() {
+        if (MediaService.isPlaying()) {
+        if (loadingDialog != null && loadingDialog.isShowing())
+            loadingDialog.dismiss();
+            finish();
+        }
+
+        if ( MediaService.isErrors()) {
+            if (loadingDialog != null && loadingDialog.isShowing())
+                loadingDialog.dismiss();
+
+            Toast.makeText(this, R.string.error_connection, Toast.LENGTH_SHORT).show();
+            MediaService.cleanErrors();
+            MediaService.stop();
+            }
+    }
+
+    private void showLoading() {
+        loadingDialog = new ProgressDialog(this);
+        loadingDialog.setMessage(getText(R.string.connection_media));
+        loadingDialog.setCancelable(false);
+        loadingDialog.setCanceledOnTouchOutside(false);
+        loadingDialog.show();
+    }
     @Override
     public void onStart() {
         EasyTracker.getInstance().activityStart(this);

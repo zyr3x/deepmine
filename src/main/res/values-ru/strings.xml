@@ -9,5 +9,5 @@
     <string name="title_next">Ближайшие</string>
     <string name="error_connection">Ошибка подключения к радио.</string>
     <string name="connection">Подключение к серверу радио...</string>
-
+    <string name="connection_media">Подключение к серверу media...</string>
 </resources>

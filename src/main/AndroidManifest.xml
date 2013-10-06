@@ -38,6 +38,7 @@
             android:theme="@android:style/Theme.Black.NoTitleBar">
         </activity>
         <service android:name=".services.RadioService" ></service>
+        <service android:name=".services.MediaService" ></service>
         <service android:name=".services.DataService" ></service>
     </application>
 
