@@ -84,6 +84,11 @@ public class DataService extends Service implements Constants {
         return _playlist;
     }
 
+    public static Playlist getMediaPlaylist()
+    {
+        return _mediaPlaylist;
+    }
+
     protected void getData()
     {
 

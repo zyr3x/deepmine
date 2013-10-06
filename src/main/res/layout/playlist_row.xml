@@ -45,15 +45,12 @@
             android:layout_marginLeft="5dp"
             custom:customFont="fonts/engravers-gothic-bt.ttf" />
 
+
     </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/playername"
-        android:id="@+id/textView"
-        android:layout_gravity="center"
-        android:textColor="#99cc00"
-        android:layout_marginLeft="5dp" />
+        android:id="@+id/title"
+        android:visibility="gone" />
 </LinearLayout>
