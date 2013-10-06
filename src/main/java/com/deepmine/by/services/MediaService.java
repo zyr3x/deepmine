@@ -10,6 +10,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.deepmine.by.MainActivity;
@@ -43,7 +44,6 @@ public class MediaService extends Service implements Constants{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startid) {
-        updateTitle();
         return START_STICKY;
     }
 
@@ -52,14 +52,14 @@ public class MediaService extends Service implements Constants{
         stop();
     }
 
-    public static void play()
+    public static void play(Context context)
     {
         RadioService.stop();
         stop();
         if(_dataTitle!=null)
         {
             _mediaTask = new MediaTask();
-            _mediaTask.execute();
+            _mediaTask.execute(context);
         }
         else
             _isError = true;
@@ -94,7 +94,7 @@ public class MediaService extends Service implements Constants{
         }
     }
 
-    protected void updateTitle()
+    protected static void updateTitle(final Context context)
     {
         _timer = new Timer();
         _timer.scheduleAtFixedRate(new TimerTaskPlus() {
@@ -104,11 +104,11 @@ public class MediaService extends Service implements Constants{
                 handler.post(new Runnable() {
                     public void run() {
                         if (_isStartService) {
-                                updateNotification(
-
-                                        _dataTitle.artist,
-                                        _dataTitle.track
-                                );
+                            updateMediaNotification(
+                                    context,
+                                    _dataTitle.artist,
+                                    _dataTitle.track
+                            );
                         }
                         else
                         {
@@ -128,7 +128,6 @@ public class MediaService extends Service implements Constants{
 
     @Override
     public void onDestroy() {
-        updateTitle();
         super.onDestroy();
     }
 
@@ -166,29 +165,30 @@ public class MediaService extends Service implements Constants{
          _isError = false;
     }
 
-    private void updateNotification(String title1, String title2) {
+    private static void updateMediaNotification(Context context,String title1, String title2) {
 
         if(mNotificationManager==null)
-            mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Notification notification = new Notification(R.drawable.ic_play, RADIO_TITLE, System.currentTimeMillis());
         notification.flags = Notification.FLAG_ONGOING_EVENT;
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,notificationIntent, 0);
-        notification.setLatestEventInfo(getApplicationContext(), title1, title2, contentIntent);
+        Intent notificationIntent = new Intent(context, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,notificationIntent, 0);
+        notification.setLatestEventInfo(context, title1, title2, contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID,notification);
     }
 
     static class MediaTask extends AsyncTask<Object, Void, Boolean> implements Constants {
-
+        Context context;
         protected Boolean doInBackground(Object... arg) {
+            context = (Context)arg[0];
             start();
             return true;
         }
 
         protected void onPostExecute(Boolean flag) {
-           // if(flag)
-           //     this.updateTitle();
+           if(flag)
+                updateTitle(context);
         }
     }
 

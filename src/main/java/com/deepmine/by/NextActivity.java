@@ -59,7 +59,7 @@ public class NextActivity extends Activity implements Constants {
                 dataTitle.artist = trackArtist.toString();
                 dataTitle.track = trackTitle.toString();
                 MediaService.setDataTitle(dataTitle);
-                MediaService.play();
+                MediaService.play(NextActivity.this);
                 showLoading();
                 checkStatus();
             }
