@@ -1,0 +1,65 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:custom="http://schemas.android.com/apk/res/com.deepmine.by"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:src="@drawable/header"
+            android:scaleType="centerCrop" />
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/header_bg"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true">
+
+            <com.deepmine.by.components.TextViewPlus
+                android:layout_width="182dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/title_playlist"
+                android:id="@+id/headerTitle"
+                android:layout_gravity="left|center_vertical"
+                android:textColor="@color/white"
+                android:layout_marginLeft="15dp"
+                custom:customFont="fonts/7124455.ttf"
+                android:layout_marginRight="103dp"></com.deepmine.by.components.TextViewPlus>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@drawable/click">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/imageView"
+                    android:layout_gravity="right|center_vertical"
+                    android:src="@android:drawable/ic_menu_sort_by_size"
+                    android:layout_marginRight="10dp"
+                    android:onClick="onClickList" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listNext"
+        android:background="#000000" />
+</LinearLayout>

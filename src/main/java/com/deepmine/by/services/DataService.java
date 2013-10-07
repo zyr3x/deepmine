@@ -126,7 +126,7 @@ public class DataService extends Service implements Constants {
                     }
                 });
             }
-        },1000,5000);
+        },UPDATE_INTERVAL,UPDATE_INTERVAL*5);
     }
 
     protected void getList()

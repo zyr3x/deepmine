@@ -88,7 +88,7 @@ public class RadioService extends Service implements Constants{
                     }
                 });
             }
-        },1000,1000);
+        },UPDATE_INTERVAL,UPDATE_INTERVAL);
     }
 
 

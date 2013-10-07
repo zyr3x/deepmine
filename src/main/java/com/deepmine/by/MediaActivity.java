@@ -6,14 +6,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deepmine.by.adapters.ItemImageBinder;
 import com.deepmine.by.components.TimerTaskPlus;
 import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.helpers.ResourceHelper;
-import com.deepmine.by.models.DataTitle;
 import com.deepmine.by.services.DataService;
 import com.deepmine.by.services.MediaService;
 import com.google.analytics.tracking.android.EasyTracker;
@@ -27,7 +25,7 @@ public class MediaActivity extends Activity implements Constants {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_playlist);
+        setContentView(R.layout.activity_playlist_full);
         ResourceHelper.getInstance().init(this);
         EasyTracker.getInstance().activityStart(this); // Add this method.
         ListView listView = (ListView) findViewById(R.id.listNext);
@@ -36,7 +34,9 @@ public class MediaActivity extends Activity implements Constants {
                 DataService.getMediaPlaylist().getSimpleAdapterList(),
                 R.layout.playlist_row,
                 getResources().getStringArray(R.array.playlist_names),
-                ResourceHelper.getInstance().getIntArray(R.array.playlist_ids)
+                ResourceHelper.getInstance().getIntArray(R.array.playlist_ids
+
+                )
         );
 
         simpleAdapter.setViewBinder(new ItemImageBinder());
@@ -66,7 +66,7 @@ public class MediaActivity extends Activity implements Constants {
                     }
                 });
             }
-        }, 1000, 1000);
+        }, UPDATE_INTERVAL, UPDATE_INTERVAL);
     }
 
     private void updateStatus() {
