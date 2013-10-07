@@ -115,7 +115,7 @@ public class NextActivity extends Activity implements Constants {
     }
 
     public void onClickList(View view) {
-        startActivity(new Intent(this, MediaActivity.class));
+        startActivity(new Intent(getBaseContext(), MediaActivity.class));
         finish();
     }
 
