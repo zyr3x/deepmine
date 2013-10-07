@@ -45,14 +45,7 @@ public class MediaActivity extends Activity implements Constants {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                CharSequence title = ((TextView)view.findViewById(R.id.title)).getText();
-                CharSequence trackArtist = ((TextView)view.findViewById(R.id.trackArtist)).getText();
-                CharSequence trackTitle = ((TextView)view.findViewById(R.id.trackTitle)).getText();
-                DataTitle dataTitle = new DataTitle();
-                dataTitle.title = title.toString();
-                dataTitle.artist = trackArtist.toString();
-                dataTitle.track = trackTitle.toString();
-                MediaService.setDataTitle(dataTitle);
+                MediaService.setDataTitle(DataService.getMediaPlaylist().getItem(i));
                 MediaService.play(MediaActivity.this);
                 showLoading();
                 checkStatus();

@@ -9,6 +9,11 @@ import java.util.HashMap;
 public class Playlist {
     public ArrayList<DataTitle> playlist;
 
+    public DataTitle getItem(int i)
+    {
+        return playlist.get(i);
+    }
+
     public ArrayList<HashMap<String, Object>> getSimpleAdapterList()
     {
         ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
