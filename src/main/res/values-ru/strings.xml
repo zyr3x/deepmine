@@ -7,7 +7,7 @@
     <string name="action_settings">Настройки</string>
     <string name="title_events">События</string>
     <string name="title_next">Ближайшие</string>
-    <string name="title_playlist">Вес список</string>
+    <string name="title_playlist">Весь список</string>
     <string name="error_connection">Ошибка подключения к радио.</string>
     <string name="connection">Подключение к серверу радио...</string>
     <string name="connection_media">Подключение к серверу media...</string>
