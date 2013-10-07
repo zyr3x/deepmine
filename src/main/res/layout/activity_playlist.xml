@@ -26,7 +26,7 @@
             android:layout_alignParentLeft="true">
 
             <com.deepmine.by.components.TextViewPlus
-                android:layout_width="516dp"
+                android:layout_width="182dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="@string/title_next"
@@ -34,7 +34,25 @@
                 android:layout_gravity="left|center_vertical"
                 android:textColor="@color/white"
                 android:layout_marginLeft="15dp"
-                custom:customFont="fonts/7124455.ttf"></com.deepmine.by.components.TextViewPlus>
+                custom:customFont="fonts/7124455.ttf"
+                android:layout_marginRight="103dp"></com.deepmine.by.components.TextViewPlus>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@drawable/click">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/imageView"
+                    android:layout_gravity="right|center_vertical"
+                    android:src="@android:drawable/ic_menu_sort_by_size"
+                    android:layout_marginRight="10dp"
+                    android:onClick="onClickList" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </RelativeLayout>
