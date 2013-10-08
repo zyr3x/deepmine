@@ -188,7 +188,10 @@ public class MainActivity extends Activity implements Constants {
     }
 
     public void onClickTitle(View view) {
-        startActivity(new Intent(this, NextActivity.class));
+        if(MediaService.isPlaying())
+            startActivity(new Intent(this, MediaActivity.class));
+        else
+            startActivity(new Intent(this, NextActivity.class));
     }
 
     private void playMedia() {
