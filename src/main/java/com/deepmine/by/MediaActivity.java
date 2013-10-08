@@ -16,6 +16,7 @@ import com.deepmine.by.services.DataService;
 import com.deepmine.by.services.MediaService;
 import com.google.analytics.tracking.android.EasyTracker;
 
+import java.lang.ref.SoftReference;
 import java.util.Timer;
 
 public class MediaActivity extends Activity implements Constants {
@@ -24,6 +25,8 @@ public class MediaActivity extends Activity implements Constants {
     SimpleAdapter simpleAdapter =null;
     ListView listView = null;
     boolean isActive = false;
+    SoftReference<View> viewSoftReference = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,20 +34,22 @@ public class MediaActivity extends Activity implements Constants {
         ResourceHelper.getInstance().init(this);
         EasyTracker.getInstance().activityStart(this);
         listView = (ListView) findViewById(R.id.listNext);
-        DataService.getMediaPlaylist().setActive(DataService.getMediaPlaylist().getActive());
         updateList();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                MediaService.setDataTitle(DataService.getMediaPlaylist().getItem(i));
+                MediaService.setDataTitle(DataService.getMediaPlaylist().getItem((int)l));
                 MediaService.play(MediaActivity.this);
-                listView.getChildAt(DataService.getMediaPlaylist().getActiveId()-listView.getFirstVisiblePosition()).findViewById(R.id.playBtn).setVisibility(View.GONE);
-                view.findViewById(R.id.playBtn).setVisibility(View.VISIBLE);
-                DataService.getMediaPlaylist().setActive(DataService.getMediaPlaylist().getItem(i));
+
+                if(viewSoftReference!=null)
+                    viewSoftReference.get().findViewById(R.id.playBtn).setVisibility(View.GONE);
+
+                viewSoftReference = new SoftReference<View>(view);
+
+                DataService.getMediaPlaylist().setActive(DataService.getMediaPlaylist().getItem((int)l));
+
                 showLoading();
                 checkStatus();
-                //updateList();
-                //listView.setSelection(i);
             }
         });
 
@@ -87,6 +92,10 @@ public class MediaActivity extends Activity implements Constants {
         if (MediaService.isPlaying()) {
             if (loadingDialog != null && loadingDialog.isShowing())
                 loadingDialog.dismiss();
+
+            if(viewSoftReference!=null)
+                viewSoftReference.get().findViewById(R.id.playBtn).setVisibility(View.VISIBLE);
+
         }
 
         if ( MediaService.isErrors()) {

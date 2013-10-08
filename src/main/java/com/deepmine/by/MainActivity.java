@@ -111,7 +111,7 @@ public class MainActivity extends Activity implements Constants {
             public void run() {
                 handler.post(new Runnable() {
                     public void run() {
-                        if (!DataService.getDataTitle().title.equals("") && !MediaService.isPlaying()) {
+                        if (DataService.getDataTitle()!=null && !DataService.getDataTitle().title.equals("") && !MediaService.isPlaying()) {
 
                             mTrackArtist.setText(DataService.getDataTitle().artist);
                             mTrack.setText(DataService.getDataTitle().track);
