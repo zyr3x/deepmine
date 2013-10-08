@@ -9,5 +9,6 @@ public class DataTitle {
     public String artist = "";
     public String track = "";
     public String cover = "";
+    public String active = "";
 
 }

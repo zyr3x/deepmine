@@ -13,5 +13,6 @@ public interface Constants {
     public static final String MEDIA_TRACK_TYPE = ".mp3";
     public static final String RADIO_SERVER_URL = "http://deepmine.by:8000/deepmine";
     public static final String EVENT_URL = "http://deepmine.by/android/hotlist";
+    public static final ImageThreadLoader IMAGE_THREAD_LOADER = new ImageThreadLoader();
 
 }

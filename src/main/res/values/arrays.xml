@@ -17,6 +17,7 @@
         <item>artist</item>
         <item>track</item>
         <item>title</item>
+        <item>active</item>
     </string-array>
 
     <integer-array name="playlist_ids">
@@ -24,5 +25,6 @@
         <item>@+id/trackArtist</item>
         <item>@+id/trackTitle</item>
         <item>@+id/title</item>
+        <item>@+id/playBtn</item>
     </integer-array>
 </resources>

@@ -20,17 +20,38 @@ import java.util.Timer;
 
 public class MediaActivity extends Activity implements Constants {
 
-    private ProgressDialog loadingDialog = null;
-
+    ProgressDialog loadingDialog = null;
+    SimpleAdapter simpleAdapter =null;
+    ListView listView = null;
+    boolean isActive = false;
+    View last;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_full);
         ResourceHelper.getInstance().init(this);
-        EasyTracker.getInstance().activityStart(this); // Add this method.
-        ListView listView = (ListView) findViewById(R.id.listNext);
+        EasyTracker.getInstance().activityStart(this);
+        listView = (ListView) findViewById(R.id.listNext);
+        DataService.getMediaPlaylist().setActive(DataService.getMediaPlaylist().getActive());
+        updateList();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                MediaService.setDataTitle(DataService.getMediaPlaylist().getItem(i));
+                MediaService.play(MediaActivity.this);
+                DataService.getMediaPlaylist().setActive(DataService.getMediaPlaylist().getItem(i));
+                showLoading();
+                checkStatus();
+                updateList();
+                listView.setSelection(i);
+            }
+        });
 
-        SimpleAdapter simpleAdapter = new SimpleAdapter( getApplicationContext(),
+    }
+
+    protected  void updateList()
+    {
+        simpleAdapter = new SimpleAdapter( getApplicationContext(),
                 DataService.getMediaPlaylist().getSimpleAdapterList(),
                 R.layout.playlist_row,
                 getResources().getStringArray(R.array.playlist_names),
@@ -38,23 +59,15 @@ public class MediaActivity extends Activity implements Constants {
 
                 )
         );
-
-        simpleAdapter.setViewBinder(new ItemImageBinder());
-        listView.setAdapter(simpleAdapter);
-        listView.setDividerHeight(0);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                MediaService.setDataTitle(DataService.getMediaPlaylist().getItem(i));
-                MediaService.play(MediaActivity.this);
-                showLoading();
-                checkStatus();
-            }
-        });
+        if(!isActive)
+        {
+            simpleAdapter.setViewBinder(new ItemImageBinder());
+            listView.setAdapter(simpleAdapter);
+            listView.setDividerHeight(0);
+        }
         simpleAdapter.notifyDataSetChanged();
 
     }
-
     protected void checkStatus()
     {
         new Timer().scheduleAtFixedRate(new TimerTaskPlus() {
@@ -73,7 +86,6 @@ public class MediaActivity extends Activity implements Constants {
         if (MediaService.isPlaying()) {
             if (loadingDialog != null && loadingDialog.isShowing())
                 loadingDialog.dismiss();
-            finish();
         }
 
         if ( MediaService.isErrors()) {
