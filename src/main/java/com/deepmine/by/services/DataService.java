@@ -109,7 +109,7 @@ public class DataService extends Service implements Constants {
                                             }
                                         }
                                 );
-                        if(!_lastTitle.equals(_dataTitle.title))
+                        if( _dataTitle!=null && !_lastTitle.equals(_dataTitle.title))
                         {
                             _lastTitle = _dataTitle.title;
                             _aQuery.transformer(new GSONTransformer())
