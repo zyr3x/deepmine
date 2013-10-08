@@ -14,6 +14,7 @@ public class Playlist implements Constants {
     public ArrayList<DataTitle> playlist;
     public DataTitle activeDataTitle;
     private int active_id = 0;
+    private int last_active_id = 0;
     public DataTitle getItem(int i)
     {
         return playlist.get(i);
@@ -51,16 +52,21 @@ public class Playlist implements Constants {
         return active_id;
     }
 
+    public int getLastActiveId()
+    {
+        return last_active_id;
+    }
+
     public void setActive(DataTitle dataTitle)
     {
         activeDataTitle = dataTitle;
-
         for (int i=0;  i< playlist.size(); i++ )
         {
             if(playlist.get(i).title.equals(dataTitle.title))
             {
                 playlist.get(i).active = "1";
-                active_id = 1;
+                last_active_id = active_id;
+                active_id = i;
             }
             else
                 playlist.get(i).active = "0";

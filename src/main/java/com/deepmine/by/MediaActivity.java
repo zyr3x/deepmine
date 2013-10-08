@@ -24,7 +24,6 @@ public class MediaActivity extends Activity implements Constants {
     SimpleAdapter simpleAdapter =null;
     ListView listView = null;
     boolean isActive = false;
-    View last;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,11 +38,13 @@ public class MediaActivity extends Activity implements Constants {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 MediaService.setDataTitle(DataService.getMediaPlaylist().getItem(i));
                 MediaService.play(MediaActivity.this);
+                listView.getChildAt(DataService.getMediaPlaylist().getLastActiveId()).findViewById(R.id.playBtn).setVisibility(View.GONE);
+                view.findViewById(R.id.playBtn).setVisibility(View.VISIBLE);
                 DataService.getMediaPlaylist().setActive(DataService.getMediaPlaylist().getItem(i));
                 showLoading();
                 checkStatus();
-                updateList();
-                listView.setSelection(i);
+                //updateList();
+                //listView.setSelection(i);
             }
         });
 
