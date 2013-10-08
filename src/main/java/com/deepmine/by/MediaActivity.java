@@ -8,7 +8,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-import com.deepmine.by.adapters.ItemImageBinder;
+import com.deepmine.by.adapters.ViewBinderPlus;
 import com.deepmine.by.components.TimerTaskPlus;
 import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.helpers.ResourceHelper;
@@ -38,7 +38,7 @@ public class MediaActivity extends Activity implements Constants {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 MediaService.setDataTitle(DataService.getMediaPlaylist().getItem(i));
                 MediaService.play(MediaActivity.this);
-                listView.getChildAt(DataService.getMediaPlaylist().getLastActiveId()).findViewById(R.id.playBtn).setVisibility(View.GONE);
+                listView.getChildAt(DataService.getMediaPlaylist().getActiveId()-listView.getFirstVisiblePosition()).findViewById(R.id.playBtn).setVisibility(View.GONE);
                 view.findViewById(R.id.playBtn).setVisibility(View.VISIBLE);
                 DataService.getMediaPlaylist().setActive(DataService.getMediaPlaylist().getItem(i));
                 showLoading();
@@ -62,7 +62,7 @@ public class MediaActivity extends Activity implements Constants {
         );
         if(!isActive)
         {
-            simpleAdapter.setViewBinder(new ItemImageBinder());
+            simpleAdapter.setViewBinder(new ViewBinderPlus());
             listView.setAdapter(simpleAdapter);
             listView.setDividerHeight(0);
         }

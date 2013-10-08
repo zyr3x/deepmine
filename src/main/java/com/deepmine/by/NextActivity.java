@@ -1,13 +1,12 @@
 package com.deepmine.by;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-import com.deepmine.by.adapters.ItemImageBinder;
+import com.deepmine.by.adapters.ViewBinderPlus;
 import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.services.DataService;
@@ -31,7 +30,7 @@ public class NextActivity extends Activity implements Constants {
                 ResourceHelper.getInstance().getIntArray(R.array.playlist_ids)
         );
 
-        simpleAdapter.setViewBinder(new ItemImageBinder());
+        simpleAdapter.setViewBinder(new ViewBinderPlus());
         listView.setAdapter(simpleAdapter);
         listView.setDividerHeight(0);
         simpleAdapter.notifyDataSetChanged();

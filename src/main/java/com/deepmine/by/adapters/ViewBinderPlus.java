@@ -13,7 +13,7 @@ import android.widget.SimpleAdapter;
 import java.net.MalformedURLException;
 
 
-public class ItemImageBinder implements SimpleAdapter.ViewBinder, Constants
+public class ViewBinderPlus implements SimpleAdapter.ViewBinder, Constants
 {
 
     @Override
