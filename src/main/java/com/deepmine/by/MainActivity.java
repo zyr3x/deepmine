@@ -22,9 +22,9 @@ import com.androidquery.callback.AjaxStatus;
 import java.net.MalformedURLException;
 import java.util.Timer;
 
+import com.deepmine.by.adapters.ViewBinderPlus;
 import com.deepmine.by.components.TimerTaskPlus;
 import com.deepmine.by.helpers.Constants;
-import com.deepmine.by.adapters.ItemImageBinder;
 import com.deepmine.by.helpers.GSONTransformer;
 import com.deepmine.by.helpers.ImageThreadLoader;
 import com.deepmine.by.helpers.ResourceHelper;
@@ -155,7 +155,7 @@ public class MainActivity extends Activity implements Constants {
                                                 ResourceHelper.getInstance().getIntArray(R.array.menu_row_element_ids)
                                         );
 
-                                simpleAdapter.setViewBinder(new ItemImageBinder());
+                                simpleAdapter.setViewBinder(new ViewBinderPlus());
 
                                 mListView.setAdapter(simpleAdapter);
                                 mListView.setDividerHeight(0);
