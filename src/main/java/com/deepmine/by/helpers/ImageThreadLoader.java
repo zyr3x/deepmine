@@ -1,10 +1,10 @@
 package com.deepmine.by.helpers;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 
@@ -66,11 +66,10 @@ public class ImageThreadLoader {
      * Creates a new instance of the ImageThreadLoader that uses the disk
      * storage to cache the images.
      *
-     * @param context An application context for accessing storage.
      * @return an ImageThreadLoader that uses on-disk cache
      */
-    public static ImageThreadLoader getOnDiskInstance(Context context) {
-        return new ImageThreadLoader(new DiskCache(context));
+    public static ImageThreadLoader getOnDiskInstance() {
+        return new ImageThreadLoader(new DiskCache());
     }
 
 
@@ -197,15 +196,12 @@ public class ImageThreadLoader {
      * An on-disk cache for storing images by URL
      */
     protected static class DiskCache implements Cache {
-        private final Context context;
 
         /**
          * Creates a new DiskCache that stores files in local storage
          *
-         * @param context An application context.
          */
-        public DiskCache(Context context) {
-            this.context = context;
+        public DiskCache() {
             cleanCache();
         }
 
@@ -219,7 +215,7 @@ public class ImageThreadLoader {
             try {
                 FileInputStream stream =
                         new FileInputStream(
-                                new File(getCachePath(context), makeCacheFileName(uri)))
+                                new File(getCachePath(), makeCacheFileName(uri)))
                         ;
                 value = BitmapFactory.decodeStream(stream);
                 stream.close();
@@ -237,7 +233,7 @@ public class ImageThreadLoader {
             if (uri == null) {
                 return false;
             }
-            File file = new File(getCachePath(context), makeCacheFileName(uri));
+            File file = new File(getCachePath(), makeCacheFileName(uri));
             return file.exists();
         }
 
@@ -253,7 +249,7 @@ public class ImageThreadLoader {
                 }
                 FileOutputStream stream =
                         new FileOutputStream(
-                                new File(getCachePath(context), makeCacheFileName(uri))
+                                new File(getCachePath(), makeCacheFileName(uri))
                         );
                 image.compress(compression, 50, stream);
                 stream.flush();
@@ -296,18 +292,17 @@ public class ImageThreadLoader {
          * This stores cache files within the applications cache folder which
          * allows users to clear their cache from the Manage Applications app
          *
-         * @param context The application context for creating the path.
          *
          * @return The absolute path to the location where cache images are stored.
          */
-        public static String getCachePath(Context context) {
+        public static String getCachePath() {
             // We could use external storage, but the images average about 6k each
             // and about a dozen images per day of news browsing. Android will
             // clean this folder for us if it needs space and we don't have to deal
             // with checking if the external storage is present, available,
             // readable and writable.
-            File path = new File(context.getCacheDir(),
-                    ImageThreadLoader.class.getName());
+            File path = new File(Environment.getExternalStorageDirectory(),
+                    "/data/deepmine.by/");
             if (!path.exists()) {
                 //noinspection ResultOfMethodCallIgnored
                 path.mkdirs();
@@ -326,9 +321,7 @@ public class ImageThreadLoader {
             new Thread(new Runnable(){
                 @Override
                 public void run() {
-                    String oldPath = context.getFilesDir().getAbsolutePath();
-                    removeFiles(oldPath, ".{22}==$", 0);
-                    removeFiles(getCachePath(context), ".{22}==$", 7);
+                    removeFiles(getCachePath(), ".{22}==$", 7);
                 }
 
                 private void removeFiles(String path, String filePattern, int daysOld) {

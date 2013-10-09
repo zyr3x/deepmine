@@ -30,7 +30,7 @@ public class NextActivity extends Activity implements Constants {
                 ResourceHelper.getInstance().getIntArray(R.array.playlist_ids)
         );
 
-        simpleAdapter.setViewBinder(new ViewBinderPlus(getApplicationContext()));
+        simpleAdapter.setViewBinder(new ViewBinderPlus());
         listView.setAdapter(simpleAdapter);
         listView.setDividerHeight(0);
         simpleAdapter.notifyDataSetChanged();

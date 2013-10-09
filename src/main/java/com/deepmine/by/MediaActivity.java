@@ -62,7 +62,7 @@ public class MediaActivity extends Activity implements Constants {
         );
         if(!isActive)
         {
-            simpleAdapter.setViewBinder(new ViewBinderPlus(getApplicationContext()));
+            simpleAdapter.setViewBinder(new ViewBinderPlus());
             listView.setAdapter(simpleAdapter);
             listView.setDividerHeight(0);
         }

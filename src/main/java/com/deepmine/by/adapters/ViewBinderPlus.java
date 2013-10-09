@@ -17,12 +17,7 @@ import java.net.MalformedURLException;
 
 public class ViewBinderPlus implements SimpleAdapter.ViewBinder, Constants
 {
-    ImageThreadLoader imageThreadLoader;
-
-    public ViewBinderPlus(Context context)
-    {
-        imageThreadLoader = ImageThreadLoader.getOnDiskInstance(context);
-    }
+    ImageThreadLoader imageThreadLoader = ImageThreadLoader.getOnDiskInstance();
 
     @Override
     public boolean setViewValue(final View view, Object data, String textRepresentation) {
@@ -36,14 +31,15 @@ public class ViewBinderPlus implements SimpleAdapter.ViewBinder, Constants
 
             return true;
         }
-        if (view instanceof ImageView && view.getId() != R.id.playBtn) {
+        if (view instanceof ImageView ) {
 
-                imageThreadLoader.loadImage(data.toString(),new ImageThreadLoader.ImageLoadedListener() {
+            ((ImageView) view).setImageDrawable(imageThreadLoader.loadImage(data.toString(), new ImageThreadLoader.ImageLoadedListener()
+            {
                     @Override
                     public void imageLoaded(Drawable imageBitmap) {
                         ((ImageView) view).setImageDrawable(imageBitmap);
                     }
-                });
+                }));
 
             return true;
         }

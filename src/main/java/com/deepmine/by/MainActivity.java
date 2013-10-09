@@ -61,7 +61,7 @@ public class MainActivity extends Activity implements Constants {
         EasyTracker.getInstance().activityStart(this); // Add this method.
 
         startDataService();
-        imageThreadLoader = ImageThreadLoader.getOnDiskInstance(this);
+        imageThreadLoader = ImageThreadLoader.getOnDiskInstance();
         mTrackArtist = (TextView) findViewById(R.id.artist);
         mTrack = (TextView) findViewById(R.id.track);
         mPlayBtn = (ImageView) findViewById(R.id.playBtn);
@@ -118,12 +118,12 @@ public class MainActivity extends Activity implements Constants {
                             mTrack.setText(DataService.getDataTitle().track);
                             if (!_lastCover.equals(DataService.getDataTitle().cover)) {
 
-                                    imageThreadLoader.loadImage(DataService.getDataTitle().cover, new ImageThreadLoader.ImageLoadedListener() {
+                                mCover.setImageDrawable(imageThreadLoader.loadImage(DataService.getDataTitle().cover, new ImageThreadLoader.ImageLoadedListener() {
                                         @Override
                                         public void imageLoaded(Drawable imageBitmap) {
                                             mCover.setImageDrawable(imageBitmap);
                                         }
-                                    });
+                                    }));
 
                             }
                         } else if (MediaService.isPlaying()) {
@@ -154,7 +154,7 @@ public class MainActivity extends Activity implements Constants {
                                                 ResourceHelper.getInstance().getIntArray(R.array.menu_row_element_ids)
                                         );
 
-                                simpleAdapter.setViewBinder(new ViewBinderPlus(getApplicationContext()));
+                                simpleAdapter.setViewBinder(new ViewBinderPlus());
 
                                 mListView.setAdapter(simpleAdapter);
                                 mListView.setDividerHeight(0);
