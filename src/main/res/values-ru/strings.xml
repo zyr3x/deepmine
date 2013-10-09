@@ -10,5 +10,5 @@
     <string name="title_playlist">Весь список</string>
     <string name="error_connection">Ошибка подключения к радио.</string>
     <string name="connection">Подключение к серверу радио...</string>
-    <string name="connection_media">Подключение к серверу media...</string>
+    <string name="connection_media">Подключение к серверу медиа...</string>
 </resources>

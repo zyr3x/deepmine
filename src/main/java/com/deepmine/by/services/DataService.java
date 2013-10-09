@@ -25,8 +25,8 @@ public class DataService extends Service implements Constants {
     private static Timer _timer = new Timer();
     private AQuery _aQuery = new AQuery(this);
     private static DataTitle _dataTitle = new DataTitle();
-    private static Playlist _playlist =new  Playlist();
-    private static Playlist _mediaPlaylist =new  Playlist();
+    private static Playlist _playlist = null;
+    private static Playlist _mediaPlaylist = null;
     private static String _lastTitle = "";
     @Override
     public void onCreate() {

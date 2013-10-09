@@ -1,58 +1,45 @@
 package com.deepmine.by;
-import android.app.Activity;
-import android.app.ProgressDialog;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 import com.deepmine.by.adapters.SimpleAdaptersPlus;
 import com.deepmine.by.adapters.ViewBinderPlus;
-import com.deepmine.by.components.TimerTaskPlus;
+import com.deepmine.by.components.BaseActivity;
 import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.services.DataService;
 import com.deepmine.by.services.MediaService;
-import com.google.analytics.tracking.android.EasyTracker;
 
-import java.lang.ref.SoftReference;
-import java.util.Timer;
+public class MediaActivity extends BaseActivity implements Constants {
 
-public class MediaActivity extends Activity implements Constants {
-
-    ProgressDialog loadingDialog = null;
-    SimpleAdaptersPlus simpleAdapter =null;
-    ListView listView = null;
-    boolean isActive = false;
-    SoftReference<View> viewSoftReference = null;
+    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_full);
-        ResourceHelper.getInstance().init(this);
-        EasyTracker.getInstance().activityStart(this);
         listView = (ListView) findViewById(R.id.listNext);
         updateList();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                MediaService.setDataTitle(DataService.getMediaPlaylist().getItem((int)l));
-                DataService.getMediaPlaylist().setActive(DataService.getMediaPlaylist().getItem((int)l));
+                MediaService.setDataTitle(DataService.getMediaPlaylist().getItem((int) l));
+                DataService.getMediaPlaylist().setActive(DataService.getMediaPlaylist().getItem((int) l));
                 MediaService.play(MediaActivity.this);
-                simpleAdapter.updateData( DataService.getMediaPlaylist().getSimpleAdapterList());
                 showLoading();
-                checkStatus();
+                checkStatus(runnable);
+                updateList();
+                listView.setSelection((int) l);
             }
         });
 
     }
 
-    protected  void updateList()
-    {
-        simpleAdapter = new SimpleAdaptersPlus( getApplicationContext(),
+    protected void updateList() {
+        SimpleAdaptersPlus simpleAdapter = new SimpleAdaptersPlus(getApplicationContext(),
                 DataService.getMediaPlaylist().getSimpleAdapterList(),
                 R.layout.playlist_row,
                 getResources().getStringArray(R.array.playlist_names),
@@ -60,67 +47,32 @@ public class MediaActivity extends Activity implements Constants {
 
                 )
         );
-        if(!isActive)
-        {
-            simpleAdapter.setViewBinder(new ViewBinderPlus());
-            listView.setAdapter(simpleAdapter);
-            listView.setDividerHeight(0);
-        }
-        simpleAdapter.notifyDataSetChanged();
+        simpleAdapter.setViewBinder(new ViewBinderPlus());
+        listView.setAdapter(simpleAdapter);
+        listView.setDividerHeight(0);
 
     }
-    protected void checkStatus()
-    {
-        new Timer().scheduleAtFixedRate(new TimerTaskPlus() {
-            @Override
-            public void run() {
-                handler.post(new Runnable() {
-                    public void run() {
-                        updateStatus();
-                    }
-                });
-            }
-        }, UPDATE_INTERVAL, UPDATE_INTERVAL);
-    }
+
+
+    Runnable runnable = new Runnable() {
+        public void run() {
+            updateStatus();
+        }
+    };
 
     private void updateStatus() {
         if (MediaService.isPlaying()) {
-            if (loadingDialog != null && loadingDialog.isShowing())
-                loadingDialog.dismiss();
-
-            if(viewSoftReference!=null)
-                viewSoftReference.get().findViewById(R.id.playBtn).setVisibility(View.VISIBLE);
-
+            if (statusLoading())
+                hideLoading();
         }
 
-        if ( MediaService.isErrors()) {
-            if (loadingDialog != null && loadingDialog.isShowing())
-                loadingDialog.dismiss();
+        if (MediaService.isErrors()) {
+            if (statusLoading())
+                hideLoading();
 
-            Toast.makeText(this, R.string.error_connection, Toast.LENGTH_SHORT).show();
+            showErrorToast();
             MediaService.cleanErrors();
             MediaService.stop();
         }
     }
-
-    private void showLoading() {
-        loadingDialog = new ProgressDialog(this);
-        loadingDialog.setMessage(getText(R.string.connection_media));
-        loadingDialog.setCancelable(false);
-        loadingDialog.setCanceledOnTouchOutside(false);
-        loadingDialog.show();
-    }
-
-    @Override
-    public void onStart() {
-        EasyTracker.getInstance().activityStart(this);
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        EasyTracker.getInstance().activityStop(this);
-        super.onStop();
-    }
-
 }

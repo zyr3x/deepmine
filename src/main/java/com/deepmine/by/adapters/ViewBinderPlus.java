@@ -39,7 +39,7 @@ public class ViewBinderPlus implements SimpleAdapter.ViewBinder, Constants
                     public void imageLoaded(Drawable imageBitmap) {
                         ((ImageView) view).setImageDrawable(imageBitmap);
                     }
-                }));
+            }));
 
             return true;
         }
