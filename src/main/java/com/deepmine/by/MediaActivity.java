@@ -8,6 +8,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.deepmine.by.adapters.SimpleAdaptersPlus;
 import com.deepmine.by.adapters.ViewBinderPlus;
 import com.deepmine.by.components.TimerTaskPlus;
 import com.deepmine.by.helpers.Constants;
@@ -22,7 +23,7 @@ import java.util.Timer;
 public class MediaActivity extends Activity implements Constants {
 
     ProgressDialog loadingDialog = null;
-    SimpleAdapter simpleAdapter =null;
+    SimpleAdaptersPlus simpleAdapter =null;
     ListView listView = null;
     boolean isActive = false;
     SoftReference<View> viewSoftReference = null;
@@ -39,15 +40,9 @@ public class MediaActivity extends Activity implements Constants {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 MediaService.setDataTitle(DataService.getMediaPlaylist().getItem((int)l));
-                MediaService.play(MediaActivity.this);
-
-                if(viewSoftReference!=null)
-                    viewSoftReference.get().findViewById(R.id.playBtn).setVisibility(View.GONE);
-
-                viewSoftReference = new SoftReference<View>(view);
-
                 DataService.getMediaPlaylist().setActive(DataService.getMediaPlaylist().getItem((int)l));
-
+                MediaService.play(MediaActivity.this);
+                simpleAdapter.updateData( DataService.getMediaPlaylist().getSimpleAdapterList());
                 showLoading();
                 checkStatus();
             }
@@ -57,7 +52,7 @@ public class MediaActivity extends Activity implements Constants {
 
     protected  void updateList()
     {
-        simpleAdapter = new SimpleAdapter( getApplicationContext(),
+        simpleAdapter = new SimpleAdaptersPlus( getApplicationContext(),
                 DataService.getMediaPlaylist().getSimpleAdapterList(),
                 R.layout.playlist_row,
                 getResources().getStringArray(R.array.playlist_names),
@@ -67,7 +62,7 @@ public class MediaActivity extends Activity implements Constants {
         );
         if(!isActive)
         {
-            simpleAdapter.setViewBinder(new ViewBinderPlus());
+            simpleAdapter.setViewBinder(new ViewBinderPlus(getApplicationContext()));
             listView.setAdapter(simpleAdapter);
             listView.setDividerHeight(0);
         }

@@ -3,6 +3,7 @@ package com.deepmine.by;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -49,7 +50,7 @@ public class MainActivity extends Activity implements Constants {
     private Intent _mediaService;
     private String _lastCover = "";
     private AQuery _aQuery = new AQuery(this);
-    private ImageThreadLoader imageThreadLoader = new ImageThreadLoader();
+    private ImageThreadLoader imageThreadLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +61,7 @@ public class MainActivity extends Activity implements Constants {
         EasyTracker.getInstance().activityStart(this); // Add this method.
 
         startDataService();
-
+        imageThreadLoader = ImageThreadLoader.getOnDiskInstance(this);
         mTrackArtist = (TextView) findViewById(R.id.artist);
         mTrack = (TextView) findViewById(R.id.track);
         mPlayBtn = (ImageView) findViewById(R.id.playBtn);
@@ -116,16 +117,14 @@ public class MainActivity extends Activity implements Constants {
                             mTrackArtist.setText(DataService.getDataTitle().artist);
                             mTrack.setText(DataService.getDataTitle().track);
                             if (!_lastCover.equals(DataService.getDataTitle().cover)) {
-                                try {
+
                                     imageThreadLoader.loadImage(DataService.getDataTitle().cover, new ImageThreadLoader.ImageLoadedListener() {
                                         @Override
-                                        public void imageLoaded(Bitmap imageBitmap) {
-                                            mCover.setImageBitmap(imageBitmap);
+                                        public void imageLoaded(Drawable imageBitmap) {
+                                            mCover.setImageDrawable(imageBitmap);
                                         }
                                     });
-                                } catch (MalformedURLException e) {
-                                    Log.d(TAG, "Error image load:" + e.getMessage());
-                                }
+
                             }
                         } else if (MediaService.isPlaying()) {
                             mTrackArtist.setText(MediaService.getDataTitle().artist);
@@ -155,7 +154,7 @@ public class MainActivity extends Activity implements Constants {
                                                 ResourceHelper.getInstance().getIntArray(R.array.menu_row_element_ids)
                                         );
 
-                                simpleAdapter.setViewBinder(new ViewBinderPlus());
+                                simpleAdapter.setViewBinder(new ViewBinderPlus(getApplicationContext()));
 
                                 mListView.setAdapter(simpleAdapter);
                                 mListView.setDividerHeight(0);
