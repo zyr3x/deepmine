@@ -9,11 +9,10 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 import com.deepmine.by.components.TimerTaskPlus;
 import com.deepmine.by.helpers.Constants;
-import com.deepmine.by.helpers.GSONTransformer;
+import com.deepmine.by.components.GSONTransformer;
 import com.deepmine.by.models.DataTitle;
 import com.deepmine.by.models.Playlist;
 
-import java.util.ArrayList;
 import java.util.Timer;
 
 /**

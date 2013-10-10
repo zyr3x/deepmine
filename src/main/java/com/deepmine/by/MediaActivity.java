@@ -6,7 +6,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.deepmine.by.adapters.SimpleAdaptersPlus;
-import com.deepmine.by.adapters.ViewBinderPlus;
+import com.deepmine.by.components.ViewBinderPlus;
 import com.deepmine.by.components.BaseActivity;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.services.DataService;

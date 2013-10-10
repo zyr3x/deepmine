@@ -1,4 +1,4 @@
-package com.deepmine.by.adapters;
+package com.deepmine.by.components;
 
 import com.deepmine.by.R;
 import com.deepmine.by.helpers.Constants;

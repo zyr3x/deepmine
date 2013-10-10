@@ -1,6 +1,5 @@
 package com.deepmine.by;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -11,25 +10,20 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 
-import java.util.Timer;
-
-import com.deepmine.by.adapters.ViewBinderPlus;
+import com.deepmine.by.components.ViewBinderPlus;
 import com.deepmine.by.components.BaseActivity;
-import com.deepmine.by.components.TimerTaskPlus;
-import com.deepmine.by.helpers.GSONTransformer;
+import com.deepmine.by.components.GSONTransformer;
 import com.deepmine.by.helpers.ImageThreadLoader;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.models.Blocks;
 import com.deepmine.by.services.DataService;
 import com.deepmine.by.services.MediaService;
 import com.deepmine.by.services.RadioService;
-import com.google.analytics.tracking.android.EasyTracker;
 
 public class MainActivity extends BaseActivity {
 

@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import com.deepmine.by.adapters.ViewBinderPlus;
+import com.deepmine.by.components.ViewBinderPlus;
 import com.deepmine.by.components.BaseActivity;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.services.DataService;

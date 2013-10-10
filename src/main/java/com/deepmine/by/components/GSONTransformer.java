@@ -1,4 +1,4 @@
-package com.deepmine.by.helpers;
+package com.deepmine.by.components;
 
 import com.androidquery.callback.AjaxStatus;
 import com.androidquery.callback.Transformer;
