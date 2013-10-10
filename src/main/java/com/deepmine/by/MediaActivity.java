@@ -8,12 +8,11 @@ import android.widget.ListView;
 import com.deepmine.by.adapters.SimpleAdaptersPlus;
 import com.deepmine.by.adapters.ViewBinderPlus;
 import com.deepmine.by.components.BaseActivity;
-import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.services.DataService;
 import com.deepmine.by.services.MediaService;
 
-public class MediaActivity extends BaseActivity implements Constants {
+public class MediaActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     ListView listView;
 
@@ -22,23 +21,23 @@ public class MediaActivity extends BaseActivity implements Constants {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_full);
         listView = (ListView) findViewById(R.id.listNext);
-        updateList();
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                MediaService.setDataTitle(DataService.getMediaPlaylist().getItem((int) l));
-                DataService.getMediaPlaylist().setActive(DataService.getMediaPlaylist().getItem((int) l));
-                MediaService.play(MediaActivity.this);
-                showLoading();
-                checkStatus(runnable);
-                updateList();
-                listView.setSelection((int) l);
-            }
-        });
+        listView.setDividerHeight(0);
+        listView.setOnItemClickListener(this);
+        updateList(0);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
+        MediaService.setDataTitle(DataService.getMediaPlaylist().getItem((int) id));
+        DataService.getMediaPlaylist().setActive(DataService.getMediaPlaylist().getItem((int) id));
+        MediaService.play(MediaActivity.this);
+        showLoading();
+        checkStatus(runnable);
+        updateList((int)id);
 
     }
 
-    protected void updateList() {
+    protected void updateList(int pos) {
         SimpleAdaptersPlus simpleAdapter = new SimpleAdaptersPlus(getApplicationContext(),
                 DataService.getMediaPlaylist().getSimpleAdapterList(),
                 R.layout.playlist_row,
@@ -49,8 +48,9 @@ public class MediaActivity extends BaseActivity implements Constants {
         );
         simpleAdapter.setViewBinder(new ViewBinderPlus());
         listView.setAdapter(simpleAdapter);
-        listView.setDividerHeight(0);
 
+        if(pos!=0)
+            listView.setSelection(pos);
     }
 
 

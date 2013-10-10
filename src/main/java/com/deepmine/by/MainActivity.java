@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Activity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -21,8 +20,8 @@ import com.androidquery.callback.AjaxStatus;
 import java.util.Timer;
 
 import com.deepmine.by.adapters.ViewBinderPlus;
+import com.deepmine.by.components.BaseActivity;
 import com.deepmine.by.components.TimerTaskPlus;
-import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.helpers.GSONTransformer;
 import com.deepmine.by.helpers.ImageThreadLoader;
 import com.deepmine.by.helpers.ResourceHelper;
@@ -32,7 +31,7 @@ import com.deepmine.by.services.MediaService;
 import com.deepmine.by.services.RadioService;
 import com.google.analytics.tracking.android.EasyTracker;
 
-public class MainActivity extends Activity implements Constants {
+public class MainActivity extends BaseActivity {
 
     public static String TAG = MAIN_TAG + ":MainActivity";
 
@@ -41,48 +40,34 @@ public class MainActivity extends Activity implements Constants {
     public static TextView mTrackArtist;
     public static TextView mTrack;
     public static ImageView mCover;
-    private ProgressDialog loadingDialog = null;
     private Intent _radioService;
     private Intent _dataService;
     private Intent _mediaService;
     private String _lastCover = "";
     private AQuery _aQuery = new AQuery(this);
-    private ImageThreadLoader imageThreadLoader;
+    private ImageThreadLoader imageThreadLoader = ImageThreadLoader.getOnDiskInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        startServices();
+        init();
+        checkStatus(runnable);
+        getEvents();
 
+    }
+
+    protected void init()
+    {
         ResourceHelper.getInstance().init(this);
-        EasyTracker.getInstance().activityStart(this); // Add this method.
-
-        startDataService();
-        imageThreadLoader = ImageThreadLoader.getOnDiskInstance();
         mTrackArtist = (TextView) findViewById(R.id.artist);
         mTrack = (TextView) findViewById(R.id.track);
         mPlayBtn = (ImageView) findViewById(R.id.playBtn);
         mCover = (ImageView) findViewById(R.id.trackCover);
         mListView = (ListView) findViewById(R.id.listEvents);
-
-        _radioService = new Intent(this, RadioService.class);
-
-        updateTitle();
-        getEvents();
-
     }
 
-    @Override
-    public void onStart() {
-        EasyTracker.getInstance().activityStart(this);
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        EasyTracker.getInstance().activityStop(this);
-        super.onStop();
-    }
 
     @Override
     public void onDestroy() {
@@ -94,45 +79,14 @@ public class MainActivity extends Activity implements Constants {
         super.onDestroy();
     }
 
-    protected void startDataService() {
+    protected void startServices() {
         if (!DataService.status()) {
             _dataService = new Intent(getApplicationContext(), DataService.class);
             _mediaService = new Intent(getApplicationContext(), MediaService.class);
+            _radioService = new Intent(getApplicationContext(), RadioService.class);
             startService(_dataService);
             startService(_mediaService);
         }
-    }
-
-    protected void updateTitle() {
-        new Timer().scheduleAtFixedRate(new TimerTaskPlus() {
-            @Override
-            public void run() {
-                handler.post(new Runnable() {
-                    public void run() {
-                        if (DataService.getDataTitle()!=null && !DataService.getDataTitle().title.equals("") && !MediaService.isPlaying()) {
-
-                            mTrackArtist.setText(DataService.getDataTitle().artist);
-                            mTrack.setText(DataService.getDataTitle().track);
-                            if (!_lastCover.equals(DataService.getDataTitle().cover)) {
-
-                                mCover.setImageDrawable(imageThreadLoader.loadImage(DataService.getDataTitle().cover, new ImageThreadLoader.ImageLoadedListener() {
-                                        @Override
-                                        public void imageLoaded(Drawable imageBitmap) {
-                                            mCover.setImageDrawable(imageBitmap);
-                                        }
-                                    }));
-
-                            }
-                        } else if (MediaService.isPlaying()) {
-                            mTrackArtist.setText(MediaService.getDataTitle().artist);
-                            mTrack.setText(MediaService.getDataTitle().track);
-                            mCover.setImageResource(R.drawable.ic_launcher_full);
-                        }
-                        updatePlayerStatus();
-                    }
-                });
-            }
-        }, UPDATE_INTERVAL, UPDATE_INTERVAL);
     }
 
     public void getEvents() {
@@ -195,14 +149,6 @@ public class MainActivity extends Activity implements Constants {
         startService(_radioService);
     }
 
-    private void showLoading() {
-        loadingDialog = new ProgressDialog(this);
-        loadingDialog.setMessage(getText(R.string.connection));
-        loadingDialog.setCancelable(false);
-        loadingDialog.setCanceledOnTouchOutside(false);
-        loadingDialog.show();
-    }
-
     private void stopMedia() {
         RadioService.stop();
         MediaService.stop();
@@ -210,10 +156,52 @@ public class MainActivity extends Activity implements Constants {
         updatePlayerStatus();
     }
 
+
+    Runnable runnable = new Runnable() {
+        public void run() {
+            updateState();
+            updatePlayerStatus();
+        }
+    };
+
+    private void updateState()
+    {
+        if (DataService.getDataTitle()!=null && !DataService.getDataTitle().title.equals("") && !MediaService.isPlaying())
+        {
+
+            mTrackArtist.setText(DataService.getDataTitle().artist);
+            mTrack.setText(DataService.getDataTitle().track);
+            if (!_lastCover.equals(DataService.getDataTitle().cover)) {
+
+                mCover.setImageDrawable(imageThreadLoader.loadImage(DataService.getDataTitle().cover, new ImageThreadLoader.ImageLoadedListener() {
+                    @Override
+                    public void imageLoaded(Drawable imageBitmap) {
+                        mCover.setImageDrawable(imageBitmap);
+                    }
+                }));
+
+            }
+        } else if (MediaService.isPlaying()) {
+            mTrackArtist.setText(MediaService.getDataTitle().artist);
+            mTrack.setText(MediaService.getDataTitle().track);
+            if (!_lastCover.equals(MediaService.getDataTitle().cover)) {
+
+                mCover.setImageDrawable(imageThreadLoader.loadImage(MediaService.getDataTitle().cover, new ImageThreadLoader.ImageLoadedListener() {
+                    @Override
+                    public void imageLoaded(Drawable imageBitmap) {
+                        mCover.setImageDrawable(imageBitmap);
+                    }
+                }));
+
+            }
+        }
+
+    }
+
     private void updatePlayerStatus() {
         if (RadioService.isPlaying() || MediaService.isPlaying()) {
-            if (loadingDialog != null && loadingDialog.isShowing())
-                loadingDialog.dismiss();
+            if (statusLoading())
+                hideLoading();
 
             mPlayBtn.setImageResource(R.drawable.ic_media_pause);
         } else {
@@ -221,10 +209,11 @@ public class MainActivity extends Activity implements Constants {
         }
 
         if (RadioService.isErrors() || MediaService.isErrors()) {
-            if (loadingDialog != null && loadingDialog.isShowing())
-                loadingDialog.dismiss();
+            if (statusLoading())
+                hideLoading();
 
-            Toast.makeText(this, R.string.error_connection, Toast.LENGTH_SHORT).show();
+            showErrorToast();
+
             RadioService.cleanErrors();
             MediaService.cleanErrors();
             stopMedia();

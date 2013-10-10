@@ -4,15 +4,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-
-import com.deepmine.by.adapters.SimpleAdaptersPlus;
 import com.deepmine.by.adapters.ViewBinderPlus;
 import com.deepmine.by.components.BaseActivity;
-import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.services.DataService;
 
-public class NextActivity extends BaseActivity implements Constants {
+public class NextActivity extends BaseActivity {
 
     ListView listView;
 
