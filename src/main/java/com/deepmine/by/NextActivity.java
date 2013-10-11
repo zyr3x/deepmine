@@ -48,6 +48,7 @@ public class NextActivity extends BaseActivity {
            listView.setAdapter(simpleAdapter);
            listView.setDividerHeight(0);
            simpleAdapter.notifyDataSetChanged();
+           stopCheckStatus();
         }
     }
 
