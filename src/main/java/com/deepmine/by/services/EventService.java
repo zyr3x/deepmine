@@ -20,6 +20,8 @@ import com.deepmine.by.helpers.Constants;
 import com.deepmine.by.models.BlockItem;
 import com.deepmine.by.models.Blocks;
 import com.deepmine.by.models.DataTitle;
+import com.deepmine.by.models.Event;
+import com.deepmine.by.models.Events;
 import com.deepmine.by.models.Playlist;
 
 import java.util.Timer;
@@ -87,13 +89,13 @@ public class EventService extends Service implements Constants {
                     public void run() {
                         _aQuery.transformer(new GSONTransformer())
                                 .ajax(
-                                        EVENT_URL,
-                                        Blocks.class,
-                                        new AjaxCallback<Blocks>() {
-                                            public void callback(String url, Blocks blocks, AjaxStatus status) {
-                                                 if(blocks.getBlockItem(0)!=null)
+                                        HOT_EVENT_URL,
+                                        Events.class,
+                                        new AjaxCallback<Events>() {
+                                            public void callback(String url, Events events, AjaxStatus status) {
+                                                 if(events.getEvent(0)!=null)
                                                  {
-                                                     addNewEvent(blocks.getBlockItem(0));
+                                                     addNewEvent(events.getEvent(0));
                                                  }
                                             }
                                         }
@@ -102,22 +104,22 @@ public class EventService extends Service implements Constants {
                     }
                 });
             }
-        }, UPDATE_INTERVAL, UPDATE_INTERVAL * 100);
+        }, UPDATE_INTERVAL, UPDATE_INTERVAL * 36000);
     }
 
-    private void addNewEvent(BlockItem blockItem)
+    private void addNewEvent(Event event)
     {
-        updateNotification("HOT EVENT",blockItem.title);
+        updateNotification(event.description,event.title);
     }
 
-    private void updateNotification(String title1, String title2) {
+    private void updateNotification(String description, String title) {
 
         if(mNotificationManager==null)
             mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Notification notification = new Notification(R.drawable.ic_launcher, RADIO_TITLE, System.currentTimeMillis());
+        Notification notification = new Notification(R.drawable.ic_launcher, description, System.currentTimeMillis());
         notification.flags = Notification.FLAG_AUTO_CANCEL;
-        notification.setLatestEventInfo(getApplicationContext(), title1, title2, null);
+        notification.setLatestEventInfo(getApplicationContext(), description, title, null);
         mNotificationManager.notify(NOTIFICATION_ID,notification);
     }
 }
