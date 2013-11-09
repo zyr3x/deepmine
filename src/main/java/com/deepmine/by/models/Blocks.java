@@ -24,4 +24,10 @@ public class Blocks {
         return list;
     }
 
+    public BlockItem getBlockItem(int i)
+    {
+        if(data.size() > i)
+            return data.get(i);
+        return null;
+    }
 }
