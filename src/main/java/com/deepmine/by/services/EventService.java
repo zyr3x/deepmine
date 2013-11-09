@@ -102,7 +102,7 @@ public class EventService extends Service implements Constants {
                     }
                 });
             }
-        }, UPDATE_INTERVAL, UPDATE_INTERVAL * 30);
+        }, UPDATE_INTERVAL, UPDATE_INTERVAL * 100);
     }
 
     private void addNewEvent(BlockItem blockItem)
