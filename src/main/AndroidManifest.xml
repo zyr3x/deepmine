@@ -47,10 +47,11 @@
             android:theme="@android:style/Theme.Black.NoTitleBar">
         </activity>
 
-        <service android:name=".services.RadioService" ></service>
-        <service android:name=".services.MediaService" ></service>
-        <service android:name=".services.DataService" ></service>
-        <service android:name=".services.EventService" ></service>
+        <service android:name=".services.RadioService" />
+        <service android:name=".services.MediaService" />
+        <service android:name=".services.DataService"  />
+        <service android:name=".services.EventService" />
+
         <receiver android:name=".services.BootReceiver"
             android:enabled="true"
             android:exported="false">
