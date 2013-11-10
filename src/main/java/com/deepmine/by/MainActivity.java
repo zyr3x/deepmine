@@ -22,7 +22,6 @@ import com.deepmine.by.helpers.ImageThreadLoader;
 import com.deepmine.by.helpers.ResourceHelper;
 import com.deepmine.by.models.Blocks;
 import com.deepmine.by.services.DataService;
-import com.deepmine.by.services.EventService;
 import com.deepmine.by.services.MediaService;
 import com.deepmine.by.services.RadioService;
 
@@ -81,9 +80,6 @@ public class MainActivity extends BaseActivity {
             _radioService = new Intent(getApplicationContext(), RadioService.class);
             startService(_dataService);
             startService(_mediaService);
-
-            if(!EventService.status())
-                startService(new Intent(getApplicationContext(), EventService.class));
         }
     }
 

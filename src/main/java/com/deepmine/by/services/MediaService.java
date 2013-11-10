@@ -10,7 +10,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.IBinder;
-import android.provider.MediaStore;
 import android.util.Log;
 
 import com.deepmine.by.MainActivity;

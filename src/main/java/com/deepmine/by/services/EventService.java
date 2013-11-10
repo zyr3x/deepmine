@@ -2,7 +2,6 @@ package com.deepmine.by.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -12,17 +11,13 @@ import android.os.IBinder;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
-import com.deepmine.by.MainActivity;
 import com.deepmine.by.R;
 import com.deepmine.by.components.GSONTransformer;
 import com.deepmine.by.components.TimerTaskPlus;
 import com.deepmine.by.helpers.Constants;
-import com.deepmine.by.models.BlockItem;
-import com.deepmine.by.models.Blocks;
-import com.deepmine.by.models.DataTitle;
+
 import com.deepmine.by.models.Event;
 import com.deepmine.by.models.Events;
-import com.deepmine.by.models.Playlist;
 
 import java.util.Timer;
 
