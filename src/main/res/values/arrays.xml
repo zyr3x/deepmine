@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="menu_row_element_names">
+    <string-array name="menu_row_element_names" translatable="false">
         <item>bg</item>
         <item>title</item>
         <item>url</item>
@@ -12,7 +12,7 @@
         <item>@+id/link</item>
     </integer-array>
 
-    <string-array name="playlist_names">
+    <string-array name="playlist_names" translatable="false">
         <item>cover</item>
         <item>artist</item>
         <item>track</item>

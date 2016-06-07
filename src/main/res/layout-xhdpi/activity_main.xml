@@ -1,6 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:custom="http://schemas.android.com/apk/res/com.deepmine.by"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000"
@@ -33,10 +32,9 @@
             android:id="@+id/linearLayout"
             android:orientation="vertical"
             android:background="@drawable/click"
-            android:onClick="onClickTitle"
+           
             android:layout_toRightOf="@+id/trackCover"
-            android:layout_above="@+id/linearLayout2"
-            android:layout_toLeftOf="@+id/linearLayout">
+            android:layout_above="@+id/linearLayout2">
 
             <com.deepmine.by.components.TextViewPlus
                 android:layout_width="fill_parent"
@@ -47,9 +45,8 @@
                 android:textSize="24dp"
                 android:singleLine="false"
                 android:text="@string/playername"
-                custom:customFont="fonts/engravers-gothic-bt.ttf"
                 android:layout_marginTop="8dp"
-                android:onClick="onClickTitle" />
+                />
 
             <com.deepmine.by.components.TextViewPlus
                 android:layout_width="fill_parent"
@@ -60,8 +57,7 @@
                 android:textSize="14dp"
                 android:text="@string/introrext"
                 android:textStyle="normal"
-                android:singleLine="true"
-                custom:customFont="fonts/engravers-gothic-bt.ttf" />
+                android:singleLine="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -69,7 +65,7 @@
             android:layout_height="60dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:id="@+id/linearLayout"
+            android:id="@+id/playLinearLayout"
             android:orientation="vertical"
             android:background="@drawable/click"
             android:onClick="onPlay">
@@ -98,12 +94,11 @@
                 android:layout_width="516dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/title_events"
+                android:text="@string/title_next"
                 android:id="@+id/headerTitle"
                 android:layout_gravity="left|center_vertical"
                 android:textColor="@color/white"
-                android:layout_marginLeft="15dp"
-                custom:customFont="fonts/7124455.ttf"/>
+                android:layout_marginLeft="15dp" />
 
         </LinearLayout>
 
@@ -112,6 +107,6 @@
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/listEvents"
+        android:id="@+id/listNext"
         android:background="#000000" />
 </LinearLayout>

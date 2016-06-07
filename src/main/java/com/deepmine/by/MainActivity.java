@@ -2,25 +2,19 @@ package com.deepmine.by;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxCallback;
-import com.androidquery.callback.AjaxStatus;
 
 import com.deepmine.by.components.ViewBinderPlus;
 import com.deepmine.by.components.BaseActivity;
-import com.deepmine.by.components.GSONTransformer;
 import com.deepmine.by.helpers.ImageThreadLoader;
 import com.deepmine.by.helpers.ResourceHelper;
-import com.deepmine.by.models.Blocks;
 import com.deepmine.by.services.DataService;
 import com.deepmine.by.services.MediaService;
 import com.deepmine.by.services.RadioService;
@@ -48,8 +42,6 @@ public class MainActivity extends BaseActivity {
         startServices();
         init();
         checkStatus(runnable);
-        getEvents();
-
     }
 
     protected void init()
@@ -59,7 +51,7 @@ public class MainActivity extends BaseActivity {
         mTrack = (TextView) findViewById(R.id.track);
         mPlayBtn = (ImageView) findViewById(R.id.playBtn);
         mCover = (ImageView) findViewById(R.id.trackCover);
-        mListView = (ListView) findViewById(R.id.listEvents);
+        mListView = (ListView) findViewById(R.id.listNext);
     }
 
 
@@ -81,47 +73,6 @@ public class MainActivity extends BaseActivity {
             startService(_dataService);
             startService(_mediaService);
         }
-    }
-
-    public void getEvents() {
-        _aQuery.transformer(new GSONTransformer())
-                .ajax(
-                        EVENT_URL,
-                        Blocks.class,
-                        new AjaxCallback<Blocks>() {
-                            public void callback(String url, Blocks blocks, AjaxStatus status) {
-
-                                SimpleAdapter simpleAdapter = new SimpleAdapter
-                                        (getApplicationContext(),
-                                                blocks.getList(),
-                                                R.layout.menu_row,
-                                                getResources().getStringArray(R.array.menu_row_element_names),
-                                                ResourceHelper.getInstance().getIntArray(R.array.menu_row_element_ids)
-                                        );
-
-                                simpleAdapter.setViewBinder(new ViewBinderPlus());
-
-                                mListView.setAdapter(simpleAdapter);
-                                mListView.setDividerHeight(0);
-                                mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView<?> adapterView, View view,
-                                                            int i, long l) {
-                                        Intent browserIntent = new Intent(
-                                                Intent.ACTION_VIEW, Uri.parse(((TextView) view
-                                                .findViewById(R.id.link)).getText().toString()));
-                                        startActivity(browserIntent);
-
-
-                                    }
-                                });
-                                simpleAdapter.notifyDataSetChanged();
-
-
-                            }
-                        }
-                );
-
     }
 
     public void onPlay(View view) {
@@ -149,7 +100,6 @@ public class MainActivity extends BaseActivity {
         stopService(_radioService);
         updatePlayerStatus();
     }
-
 
     Runnable runnable = new Runnable() {
         public void run() {
@@ -189,6 +139,19 @@ public class MainActivity extends BaseActivity {
 
             }
         }
+        if (DataService.getPlaylist()!=null) {
+            SimpleAdapter simpleAdapter = new SimpleAdapter( getApplicationContext(),
+                    DataService.getPlaylist().getSimpleAdapterList(),
+                    R.layout.playlist_row,
+                    getResources().getStringArray(R.array.playlist_names),
+                    ResourceHelper.getInstance().getIntArray(R.array.playlist_ids)
+            );
+
+            simpleAdapter.setViewBinder(new ViewBinderPlus());
+            mListView.setAdapter(simpleAdapter);
+            mListView.setDividerHeight(0);
+            simpleAdapter.notifyDataSetChanged();
+        }
 
     }
 
@@ -212,7 +175,6 @@ public class MainActivity extends BaseActivity {
             MediaService.cleanErrors();
             stopMedia();
         }
-
     }
 
 }

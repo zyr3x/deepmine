@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.deepmine.by"
-    android:versionCode="10"
-    android:versionName="1.6.0" >
+    android:versionCode="11"
+    android:versionName="1.6.1" >
 
-    <uses-sdk
-        android:minSdkVersion="7"
-        android:targetSdkVersion="16" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -31,35 +27,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.deepmine.by.NextActivity"
-            android:label="@string/title_next"
-            android:screenOrientation="nosensor"
-            android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.Black.NoTitleBar">
-        </activity>
-
-        <activity
-            android:name="com.deepmine.by.MediaActivity"
-            android:label="@string/title_playlist"
-            android:screenOrientation="nosensor"
-            android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.Black.NoTitleBar">
-        </activity>
-
         <service android:name=".services.RadioService" />
         <service android:name=".services.MediaService" />
         <service android:name=".services.DataService"  />
-        <service android:name=".services.EventService" />
-
-        <receiver android:name=".services.BootReceiver"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
     </application>
 
 </manifest>
